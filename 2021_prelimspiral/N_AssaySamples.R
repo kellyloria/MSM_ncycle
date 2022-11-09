@@ -2,12 +2,6 @@
 ## Nitrogen Uptake Assay
 ## ** NEED to double check morph and salt measurements before adding as a column to the dataset. 
 ##
-lapply(c("plyr","dplyr","ggplot2","cowplot","lubridate","tidyverse"), require, character.only=T)
-
-# File path setup:
-if (dir.exists('/Users/kellyloria/Documents/UNR/SummerResearch2021')){
-  outputDir<- '/Users/kellyloria/Documents/UNR/SummerResearch2021/Conduct_downloads/AssayHOBO/HOBOtrim' 
-}
 
 
 ## ---------------------------
@@ -40,7 +34,7 @@ dat$SpCond <- dat$Full.Range/(1-(25-dat$TempC)*0.021/100)
 ggplot(dat, aes(timestamp, SpCond))+geom_point()
 # Subset based on plot to the slug window
 # Pull out slug window:
-dat1 <- subset(dat, timestamp >= as.POSIXct("2021-06-09 12:35:00") & timestamp <= as.POSIXct("2021-06-09 13:35:00")) ## modify to match your data
+dat1 <- subset(dat, timestamp >= as.POSIXct("2021-06-09 12:30:00") & timestamp <= as.POSIXct("2021-06-09 13:36:00")) ## modify to match your data
 ggplot(dat1, aes(timestamp, SpCond))+geom_point()
 range(na.omit(dat$timestamp))
 
@@ -61,7 +55,7 @@ Qint<-function(time, cond, bkg, condmass){
 ## (1) Determine the background conductivity
 ## Select area before or after the salt wave which is constant
 ## for at least 30 minutes and take the average
-sub_bg <- subset(dat, timestamp >= as.POSIXct("2021-06-09 12:35:00") & timestamp <= as.POSIXct("2021-06-09 12:48:00")) #Lolomai
+sub_bg <- subset(dat, timestamp >= as.POSIXct("2021-06-09 12:35:00") & timestamp <= as.POSIXct("2021-06-09 12:44:00")) #Lolomai
 bg_SpCond <- mean(sub_bg$SpCond)
 ## (2) Estimate conductivity slug based on mass of Cl added
 ## 1 g salt in 1 L of water gives cond=2100 uS / cm
@@ -98,9 +92,9 @@ v
 ## w is average width (m)
 ## v is velocity (m/sec)
 ## Enter average width measurement in m # NEED TO DOUBLE CHECK
-w <- 20
+w <- (7.057292)
 ## Calculate effective depth
-z <- (Q/365.76)/(w*v)
+z <- (Q/1000)/(w*v)
 z
 ## Example Summary
 
@@ -135,6 +129,13 @@ qplot(timestamp, SpCond, data = sample2, geom="point", ylab ="Flow", color = (Ke
 
 qplot(timestamp, SpCond, data = sample1, geom="point", ylab ="Flow", color = factor(sample.no)) +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
+
+
+
+
+
+
+
 
 
 ## ---------------------------
@@ -194,7 +195,7 @@ bg_SpCond <- mean(sub_bg$SpCond)
 ## (2) Estimate conductivity slug based on mass of Cl added
 ## 1 g salt in 1 L of water gives cond=2100 uS / cm
 # Oak @ Lolomai: 500 g 
-SpCond_mass <- 2100*2400 # 500 g NaCl
+SpCond_mass <- 2100*240 # 500 g NaCl
 ## Calculate Q!
 ## Units = L/sec
 Q <- Qint(as.numeric(dat1$timestamp), dat1$SpCond, bg_SpCond, SpCond_mass)
@@ -310,7 +311,7 @@ inj_time <- as.POSIXct("2021-07-15 10:00:00") #Lolomai
 peak_time <- dat1[which.max(dat1$SpCond),]$timestamp 
 time_diff_sec <- as.numeric(peak_time - inj_time)*60
 ## Velocity = distance in meters/time in seconds # Oak @ Lolomai: 365.76 m upstream
-v <- 365.76/time_diff_sec
+v <- 50/time_diff_sec
 v
 ## Example Summary
 ## Oak @ Lolomai: 0.346 m/s
@@ -327,9 +328,10 @@ v
 ## w is average width (m)
 ## v is velocity (m/sec)
 ## Enter average width measurement in m # NEED TO DOUBLE CHECK
-w <- mean(20.5,10.5,16,9,9.5,18,16.5,10.5)
+wft <- mean(20.5,10.5,16,9,9.5,18,16.5,10.5)
+w<- 4.418729143
 ## Calculate effective depth
-z <- (Q/50)/(w*v)
+z <- (Q/1000)/(w*v)
 z
 ###
 
@@ -398,13 +400,6 @@ range(na.omit(dat$timestamp))
 ## Estimate Q ##
 ################
 ## Equation
-Qint<-function(time, cond, bkg, condmass){
-  condcorr<-cond-bkg
-  ##below routine integrates
-  ydiff<- condcorr[-1]+ condcorr[-length(condcorr)]
-  condint<-sum(diff(time)*ydiff/2)
-  Q<-condmass/condint
-  Q }
 ## (1) Determine the background conductivity
 ## Select area before or after the salt wave which is constant
 ## for at least 30 minutes and take the average
@@ -428,7 +423,7 @@ inj_time <- as.POSIXct("2021-07-15 10:00:00") #Lolomai
 peak_time <- dat1[which.max(dat1$SpCond),]$timestamp 
 time_diff_sec <- as.numeric(peak_time - inj_time)*60
 ## Velocity = distance in meters/time in seconds # Oak @ Lolomai: 365.76 m upstream
-v <- 365.76/time_diff_sec
+v <- 50/time_diff_sec
 v
 ## Example Summary
 ## Oak @ Lolomai: 0.346 m/s
@@ -524,7 +519,7 @@ inj_time <- as.POSIXct("2021-07-15 10:00:00") #Lolomai
 peak_time <- dat1[which.max(dat1$SpCond),]$timestamp 
 time_diff_sec <- as.numeric(peak_time - inj_time)*60
 ## Velocity = distance in meters/time in seconds # Oak @ Lolomai: 365.76 m upstream
-v <- 365.76/time_diff_sec
+v <- 100/time_diff_sec
 v
 ## Example Summary
 ## Oak @ Lolomai: 0.346 m/s
@@ -541,9 +536,12 @@ v
 ## w is average width (m)
 ## v is velocity (m/sec)
 ## Enter average width measurement in m # NEED TO DOUBLE CHECK
-w <- mean(20.5,10.5,16,9,9.5,18,16.5,10.5)
+wft <- mean(19.5,9.5,15,8,8.5,17,15.5,9.5) 
+
+w<-3.74364
+
 ## Calculate effective depth
-z <- (Q/100)/(w*v)
+z <- (Q/1000)/(w*v)
 z
 
 
