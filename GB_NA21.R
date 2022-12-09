@@ -670,6 +670,11 @@ w <- mean()
 z <- (Q/1000)/(w*v)
 z
 
+
+
+
+
+
 #####################
 ## GBU 2022-04-07 ##
 #####################
@@ -883,14 +888,14 @@ str(BW_Hobo)
 BW_Hobo$SpCond <- BW_Hobo$Cond/(1-(25-BW_Hobo$TempC)*0.021/100)
 
 # Adjust the time range:
-BW_Hobo1 <- subset(BW_Hobo, DateTime >= as.POSIXct("2022-10-03 10:35:00") & DateTime <= as.POSIXct("2022-10-03 11:42:00"))
+BW_Hobo1 <- subset(BW_Hobo, DateTime >= as.POSIXct("2022-10-03 10:40:00") & DateTime <= as.POSIXct("2022-10-03 11:42:00"))
 
 qplot(DateTime, Cond, data = BW_Hobo1, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 
 ## Reach morphology estimates:
 ##
-sub_bg <- subset(BW_Hobo1, DateTime >= as.POSIXct("2022-10-03 10:35:00") & DateTime <= as.POSIXct("2022-10-03 10:50:00")) #Lolomai
+sub_bg <- subset(BW_Hobo1, DateTime >= as.POSIXct("2022-10-03 10:40:00") & DateTime <= as.POSIXct("2022-10-03 10:50:00")) #Lolomai
 bg_SpCond <- mean(sub_bg$SpCond)
 ## (2) Estimate conductivity slug based on mass of Cl added
 SpCond_mass <- c(2100*700) # NOT sure
@@ -898,9 +903,9 @@ SpCond_mass <- c(2100*700) # NOT sure
 ## Units = L/sec
 Q <- Qint(as.numeric(BW_Hobo1$DateTime), BW_Hobo1$SpCond, bg_SpCond, SpCond_mass)
 
-inj_time <- as.POSIXct("2022-10-03 10:53:10") #Lolomai 
+inj_time <- as.POSIXct("2022-10-03 10:50:10") #Lolomai 
 peak_time <- BW_Hobo1[which.max(BW_Hobo1$SpCond),]$DateTime 
-#end_time <-as.POSIXct("2021-07-28 17:01:50")
+end_time <-as.POSIXct("2022-10-03 11:42:00")
 time_diff_sec <- as.numeric(peak_time - inj_time)*60
 time_tota_sec <- (as.numeric(end_time - inj_time)) * 3600 # minutes
 
@@ -916,6 +921,14 @@ w
 ## Calculate effective depth
 z <- (Q/1000)/(w*v)
 z
+
+
+
+
+
+
+
+
 
 
 

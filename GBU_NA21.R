@@ -203,7 +203,6 @@ library(dr4pl)
 model.drm1 <- drc::drm (Uadd ~ NO3, data = out, fct = MM.3())
 summary(model.drm1)
 
-mm1<- data.frame(Uadd = seq(0, max(out$Uadd), length.out = 100))
 mm1 <- data.frame(NO3_C = seq(0, max(out$NO3), length.out = 100))
 mm2$Uadd <- predict(model.drm1, newdata = mm1)
 
