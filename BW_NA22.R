@@ -23,21 +23,22 @@ Qint<-function(time, cond, bkg, condmass){
 
 
 ##########################
-
+# BWU/L 2022-08-24
+# BWL 2022-10-12
 
 
 ##
 ##########################
-### GBL 2022-11-04 ##
+### BWL 2022-08-24 ##
 
-Hobo <-read.csv("./NA22_dat/GBL20221104/20775523_19_BOR.csv", skip=1)
+Hobo <-read.csv("./NA22_dat/BWL_20220824/BWLNH4BOR_20775520_20220824.csv", skip=1)
 summary(Hobo)
 names(Hobo)
 
 # modify the names to whatever names your sensor spits out # figure out the names after import by using names(dat) 
 Hobo <- Hobo[,c("Date.Time..GMT.07.00",
-                "Full.Range..μS.cm..LGR.S.N..20775523..SEN.S.N..20775523.",
-                "Temp...C..LGR.S.N..20775523..SEN.S.N..20775523.")]
+                "Full.Range..μS.cm..LGR.S.N..20775520..SEN.S.N..20775520.",
+                "Temp...C..LGR.S.N..20775520..SEN.S.N..20775520.")]
 
 colnames(Hobo) <- c("DateTime","Cond","TempC")
 # Convert DateTime
@@ -52,29 +53,29 @@ qplot(DateTime, Cond, data = Hobo, geom="point") +
 Hobo$SpCond <- Hobo$Cond/(1-(25-Hobo$TempC)*0.021/100)
 
 # Adjust the time range:
-Hobo <- subset(Hobo, DateTime >= as.POSIXct("2022-11-04 11:10:00") & DateTime <= as.POSIXct("2022-11-04 12:35:50"))
+Hobo <- subset(Hobo, DateTime >= as.POSIXct("2022-08-24 10:05:00") & DateTime <= as.POSIXct("2022-08-24 11:36:00"))
 
 qplot(DateTime, Cond, data = Hobo, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 
 ## Reach morphology estimates:
 ## (1) Determine the background conductivity
-sub_bg <- subset(Hobo, DateTime >= as.POSIXct("2022-11-04 11:10:00") & DateTime <= as.POSIXct("2022-11-04 11:30:00")) #Lolomai
+sub_bg <- subset(Hobo, DateTime >= as.POSIXct("2022-08-24 10:05:00") & DateTime <= as.POSIXct("2022-08-24 10:15:00")) #Lolomai
 bg_SpCond <- mean(sub_bg$SpCond)
 ## (2) Estimate conductivity slug based on mass of Cl added
-SpCond_mass <- c(2100*700) 
+SpCond_mass <- c(2100*1500) 
 ## Calculate Q
 ## Units = L/sec
 Q <- Qint(as.numeric(Hobo$DateTime), Hobo$SpCond, bg_SpCond, SpCond_mass)
 
-inj_time <- as.POSIXct("2022-11-04 11:26:40") #Lolomai 
+inj_time <- as.POSIXct("2022-08-24 10:18:05") #Lolomai 
 peak_time <- Hobo[which.max(Hobo$SpCond),]$DateTime 
-end_time <-as.POSIXct("2022-11-04 12:34:30")
+end_time <-as.POSIXct("2022-08-24 11:35:30")
 time_diff_sec <- as.numeric(peak_time - inj_time)*60
 time_tota_sec <- (as.numeric(end_time - inj_time)) * 3600 # minutes
 
 ## Velocity = distance in meters/time in seconds
-reachL <- c(50) #
+reachL <- c(100) #
 v <- c(reachL/time_diff_sec)
 v
 
@@ -88,7 +89,7 @@ z <- (Q/1000)/(w*v)
 z
 
 ## NH4 sample data ## 
-dat <- read.csv("./NA22_dat/GBL20221104/GBL20221104_NH4.csv")
+dat <- read.csv("./NA22_dat/BWL_20220824/BWL20220824_NH4.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%Y-%m-%d %H:%M:%S")
 str(dat)
 
