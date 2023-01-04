@@ -112,8 +112,8 @@ datq$Cl_mgL <- ((0.05/0.105)*datq$SpCond_C)
 qplot(Cl_mgL, Nh4_C, data = datq, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 
-# Carboy concentrations KNO3 in 12L carboy
-Nh4mgL <- 189.2 * (1000) * (62/101) *(1/9.46353)
+# Carboy concentrations N in 12L carboy
+Nh4mgL <- 189.2 * (1000) * (18.04/53.491) *(1/9.46353)
 # Carboy concentrations 700g NaCl in 6L carboy
 NaClmgL <- 704.6 * (1000) * (35.45/58.44) * (1/9.46353)
 carboy <- Nh4mgL/NaClmgL
@@ -166,9 +166,9 @@ GB_uptake<- plot_grid(
   ncol=1, align="hv")
 GB_uptake
 
-# ggsave(plot = GB_uptake, filename = paste("./figures/GBU221104.png",sep=""),width=4,height=7,dpi=300)
+# ggsave(plot = GB_uptake, filename = paste("./figures/GBU221104_MW.png",sep=""),width=4,height=7,dpi=300)
 
-# write.csv(x = out, file = "./BTC_out/GBU_BTC_20221104.csv", row.names = TRUE)
+# write.csv(x = out, file = "./BTC_out/GBU_BTC_20221104_MW.csv", row.names = TRUE)
 
 # estimate N supply:
 N_supp <-(86400*Q*(Cadd*0.001))/(w*reachL)
@@ -284,7 +284,7 @@ qplot(Cl_mgL, Nh4_C, data = GBL_NH4v2, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 
 # Carboy concentrations 300g KNO3 in 6L carboy
-Nh4mgL <- 300 * (1000) * (62/101) *(1/6)
+Nh4mgL <- 300 * (1000) * (18.04/53.491) *(1/6)
 # Carboy concentrations 700g NaCl in 6L carboy
 NaClmgL <- 700 * (1000) * (35.45/58.44) * (1/6)
 carboy <- Nh4mgL/NaClmgL
@@ -340,9 +340,9 @@ GB_uptake<- plot_grid(
 
 GB_uptake
 
-# ggsave(plot = GB_uptake, filename = paste("./figures/GBL220103.png",sep=""),width=4,height=7,dpi=300)
+# ggsave(plot = GB_uptake, filename = paste("./figures/GBL220103_MW.png",sep=""),width=4,height=7,dpi=300)
 
-# write.csv(x = out, file = "./BTC_out/GBL_BTC_20221003.csv", row.names = TRUE)
+# write.csv(x = out, file = "./BTC_out/GBL_BTC_20221003_MW.csv", row.names = TRUE)
 
 # estimate N supply:
 N_supp <-(86400*Q*(Cadd*0.001))/(w*reachL)
@@ -476,7 +476,7 @@ qplot(Cl_mgL, Nh4_C, data = datq, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 
 # Carboy concentrations 300g KNO3 in 6L carboy
-Nh4mgL <- 200 * (1000) * (62/101) *(1/6)
+Nh4mgL <- 200 * (1000) * (18.04/53.491) *(1/6)
 # Carboy concentrations 700g NaCl in 6L carboy
 NaClmgL <- 700 * (1000) * (35.45/58.44) * (1/6)
 carboy <- Nh4mgL/NaClmgL
@@ -525,9 +525,9 @@ GB_uptake<- plot_grid(
   ggplot(Hobo, aes(DateTime, SpCond)) + geom_point(),
   ncol=1, align="hv")
 
-# ggsave(plot = GB_uptake, filename = paste("./figures/GBU220103.png",sep=""),width=4,height=7,dpi=300)
+# ggsave(plot = GB_uptake, filename = paste("./figures/GBU220103_MW.png",sep=""),width=4,height=7,dpi=300)
 
-# write.csv(x = out, file = "./BTC_out/GBU_BTC_20221003.csv", row.names = TRUE)
+# write.csv(x = out, file = "./BTC_out/GBU_BTC_20221003_MW.csv", row.names = TRUE)
 
 # estimate N supply:
 N_supp <-(86400*Q*(Cadd*0.001))/(w*reachL)
@@ -634,13 +634,13 @@ datq$SpCond_C <- c(datq$SpCond  - bg_SpCond)
 datq$SpCond_C <-replace(datq$SpCond_C, datq$SpCond_C<0, 0)
 
 #No Cl samples so Cl approx.
-datq$Cl_mgL <- ((0.05/0.105)*datq$SpCond_C)
+datq$Cl_mgL <- ((18.04/53.491)*datq$SpCond_C)
 
 qplot(Cl_mgL, Nh4_C, data = datq, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 
 # Carboy concentrations 300g KNO3 in 12L carboy
-Nh4mgL <- 300 * (1000) * (62/101) *(1/12)
+Nh4mgL <- 300 * (1000) * (18.04/53.491) *(1/12)
 # Carboy concentrations 700g NaCl in 6L carboy
 NaClmgL <- 700 * (1000) * (35.45/58.44) * (1/12)
 carboy <- Nh4mgL/NaClmgL
