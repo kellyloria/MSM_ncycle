@@ -78,7 +78,7 @@ z
 
 
 ## NH4 sample data ## 
-dat <- read.csv("./NA22_dat/GBL_20220407/GBL20220407_NH4.csv")
+dat <- read.csv("./NA22_dat/GBL_20220407/GBL20220407_NH4v2.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%Y-%m-%d %H:%M:%S")
 str(dat)
 
@@ -96,12 +96,8 @@ datq <- dat[c(1:18),]
 Cadd <- mean(dat[c(19:20),c(4)])
 
 # 2. Correct for background concentrations (_C):
-#GB_NA$NO3_C <- (GB_NA$Results-0.021) 
-#GB_NA$NO3_CC <-replace(GB_NA$NO3_C, GB_NA$NO3_C<0, 0) # Na's produced in TMR calculations if 0
 datq$Nh4_C <- (datq$Nh4_mgNL) - Cadd
 datq$Nh4_C <-replace(datq$Nh4_C, datq$Nh4_C<0, 0)
-
-
 
 datq$SpCond_C <- c(datq$ysi_SPC  - c(428))
 datq$SpCond_C <-replace(datq$SpCond_C, datq$SpCond_C<0, 0)
@@ -166,7 +162,7 @@ GB_uptake<- plot_grid(
   ncol=1, align="hv")
 GB_uptake
 
-# ggsave(plot = GB_uptake, filename = paste("./figures/GBU221104_MW.png",sep=""),width=4,height=7,dpi=300)
+# ggsave(plot = GB_uptake, filename = paste("./figures/GBU221104v2.png",sep=""),width=4,height=7,dpi=300)
 
 # write.csv(x = out, file = "./BTC_out/GBU_BTC_20221104_MW.csv", row.names = TRUE)
 
@@ -177,6 +173,9 @@ mean(out$sw)
 mean(out$Uadd)
 mean(Hobo$TempC)
 mean(na.omit(datq$PO4_ugL))
+mean(na.omit(datq$DOC_mgL))
+N_alt<-mean(na.omit(datq$NO3_mgNL))
+N_supp <-(86400*Q*(N_alt*0.001))/(w*reachL)
 
 
 
@@ -188,39 +187,39 @@ mean(na.omit(datq$PO4_ugL))
 #################### 
 ## GBL NH4 2022-10-03 ##
 
-BW_Hobo <-read.csv("./NA22_dat/GBL_20221003/BORGBLandGBU20775520_12.csv", skip=1)
-summary(BW_Hobo)
-names(BW_Hobo)
+Hobo <-read.csv("./NA22_dat/GBL_20221003/BORGBLandGBU20775520_12.csv", skip=1)
+summary(Hobo)
+names(Hobo)
 
 # modify the names to whatever names your sensor spits out # figure out the names after import by using names(dat) 
-BW_Hobo <- BW_Hobo[,c("Date.Time..GMT.07.00",
+Hobo <- Hobo[,c("Date.Time..GMT.07.00",
                       "Full.Range..μS.cm..LGR.S.N..20775520..SEN.S.N..20775520.",
                       "Temp...C..LGR.S.N..20775520..SEN.S.N..20775520.")]
 
-colnames(BW_Hobo) <- c("DateTime","Cond","TempC")
+colnames(Hobo) <- c("DateTime","Cond","TempC")
 # Convert DateTime
-BW_Hobo$DateTime <- as.POSIXct(as.character(BW_Hobo$DateTime), format="%Y-%m-%dT%H:%M:%SZ") 
-range(BW_Hobo$DateTime)
-str(BW_Hobo)
+Hobo$DateTime <- as.POSIXct(as.character(Hobo$DateTime), format="%Y-%m-%dT%H:%M:%SZ") 
+range(Hobo$DateTime)
+str(Hobo)
 
 # 
-BW_Hobo$SpCond <- BW_Hobo$Cond/(1-(25-BW_Hobo$TempC)*0.021/100)
+Hobo$SpCond <- Hobo$Cond/(1-(25-Hobo$TempC)*0.021/100)
 
 # Adjust the time range:
-BW_Hobo1 <- subset(BW_Hobo, DateTime >= as.POSIXct("2022-10-03 10:40:00") & DateTime <= as.POSIXct("2022-10-03 11:42:00"))
+Hobo <- subset(Hobo, DateTime >= as.POSIXct("2022-10-03 10:40:00") & DateTime <= as.POSIXct("2022-10-03 11:42:00"))
 
-qplot(DateTime, Cond, data = BW_Hobo1, geom="point") +
+qplot(DateTime, Cond, data = Hobo, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 
 ## Reach morphology estimates:
 ##
-sub_bg <- subset(BW_Hobo1, DateTime >= as.POSIXct("2022-10-03 10:40:00") & DateTime <= as.POSIXct("2022-10-03 10:50:00")) #Lolomai
+sub_bg <- subset(Hobo, DateTime >= as.POSIXct("2022-10-03 10:40:00") & DateTime <= as.POSIXct("2022-10-03 10:50:00")) #Lolomai
 bg_SpCond <- mean(sub_bg$SpCond)
 ## (2) Estimate conductivity slug based on mass of Cl added
 SpCond_mass <- c(2100*700) # NOT sure
 ## Calculate Q
 ## Units = L/sec
-Q <- Qint(as.numeric(BW_Hobo1$DateTime), BW_Hobo1$SpCond, bg_SpCond, SpCond_mass)
+Q <- Qint(as.numeric(Hobo$DateTime), Hobo$SpCond, bg_SpCond, SpCond_mass)
 
 inj_time <- as.POSIXct("2022-10-03 10:50:10") #Lolomai 
 peak_time <- BW_Hobo1[which.max(BW_Hobo1$SpCond),]$DateTime 
@@ -243,14 +242,14 @@ z
 
 
 ### NH4 samples ###
-GBL_NH4 <- read.csv("/Users/kellyloria/Documents/UNR/Ncycle/MSM_ncycle/NA22_dat/GBL_20221003/GBL20221003_NH4.csv")
+GBL_NH4 <- read.csv("./NA22_dat/GBL_20221003/GBL20221003_NH4v2.csv")
 GBL_NH4$datetime <- as.POSIXct(paste(GBL_NH4$date, GBL_NH4$time), format = "%Y-%m-%d %H:%M:%S")
 str(GBL_NH4)
 
-GBL_NH4 <- left_join(GBL_NH4, BW_Hobo1[c("DateTime", "SpCond")],
+GBL_NH4 <- left_join(GBL_NH4, Hobo[c("DateTime", "SpCond")],
                      by= c("datetime"="DateTime"))
 
-summary(GB_NA)
+summary(GBL_NH4)
 
 qplot(datetime, Nh4_mgNL, data = GBL_NH4, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))+
@@ -326,7 +325,7 @@ for (i in 2:nrow(dat)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2, -3),]
+out <- out[c(-1,-2,-3),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
 
@@ -335,23 +334,24 @@ GB_uptake<- plot_grid(
   ggplot(out, aes(NH4, sw)) + geom_point(),
   ggplot(out, aes(NH4, Uadd)) + geom_point(), 
   ggplot(out, aes(datetime, log(NH4/Cl))) + geom_point(),
-  ggplot(BW_Hobo1, aes(DateTime, SpCond)) + geom_point(),
+  ggplot(Hobo, aes(DateTime, SpCond)) + geom_point(),
   ncol=1, align="hv")
 
 GB_uptake
 
-# ggsave(plot = GB_uptake, filename = paste("./figures/GBL220103_MW.png",sep=""),width=4,height=7,dpi=300)
+# ggsave(plot = GB_uptake, filename = paste("./figures/GBL220103v2.png",sep=""),width=4,height=7,dpi=300)
 
-# write.csv(x = out, file = "./BTC_out/GBL_BTC_20221003_MW.csv", row.names = TRUE)
+# write.csv(x = out, file = "./BTC_out/GBL_BTC_20221003v2.csv", row.names = TRUE)
 
 # estimate N supply:
 N_supp <-(86400*Q*(Cadd*0.001))/(w*reachL)
 mean(out$sw)
 mean(out$Uadd)
-mean(BW_Hobo1$TempC)
-mean(na.omit(GBL_NH4v2$PO4_ugL))
-
-plot_out<- out[c(-1, -3),]
+mean(Hobo$TempC)
+mean(na.omit(dat$PO4_ugL))
+mean(na.omit(dat$DOC_mgL))
+N_alt<-mean(na.omit(dat$NO3_mgNL))
+N_supp <-(86400*Q*(N_alt*0.001))/(w*reachL)
 
 #### M-M curve fit -- Error here.
 library(dr4pl)
@@ -434,7 +434,7 @@ z <- (Q/1000)/(w*v)
 z
 
 ## NH4 sample data ## 
-dat <- read.csv("./NA22_dat/GBU_20221003/GBU20221003_NH4.csv")
+dat <- read.csv("./NA22_dat/GBU_20221003/GBU20221003_NH4v2.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%Y-%m-%d %H:%M:%S")
 str(dat)
 
@@ -457,19 +457,14 @@ datq <- dat[c(1:19),]
 Cadd <- mean(dat[c(20:21),c(4)])
 
 # 2. Correct for background concentrations (_C):
-#GB_NA$NO3_C <- (GB_NA$Results-0.021) 
-#GB_NA$NO3_CC <-replace(GB_NA$NO3_C, GB_NA$NO3_C<0, 0) # Na's produced in TMR calculations if 0
 datq$Nh4_C <- (datq$Nh4_mgNL) - Cadd
 datq$Nh4_C <-replace(datq$Nh4_C, datq$Nh4_C<0, 0)
 
 
-datq[19,9]= 418.951
+datq[19,11]= 418.951
 datq$SpCond_C <- c(datq$SpCond  - bg_SpCond)
 datq$SpCond_C <-replace(datq$SpCond_C, datq$SpCond_C<0, 0)
 
-
-## I'm here ###
-#No Cl samples so Cl approx.
 datq$Cl_mgL <- ((0.05/0.105)*datq$SpCond_C)
 
 qplot(Cl_mgL, Nh4_C, data = datq, geom="point") +
@@ -513,7 +508,7 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2),]
+out <- out[c(-1,-2, -3),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
 
@@ -525,9 +520,9 @@ GB_uptake<- plot_grid(
   ggplot(Hobo, aes(DateTime, SpCond)) + geom_point(),
   ncol=1, align="hv")
 
-# ggsave(plot = GB_uptake, filename = paste("./figures/GBU220103_MW.png",sep=""),width=4,height=7,dpi=300)
+# ggsave(plot = GB_uptake, filename = paste("./figures/GBU220103v2.png",sep=""),width=4,height=7,dpi=300)
 
-# write.csv(x = out, file = "./BTC_out/GBU_BTC_20221003_MW.csv", row.names = TRUE)
+# write.csv(x = out, file = "./BTC_out/GBU_BTC_20221003v2.csv", row.names = TRUE)
 
 # estimate N supply:
 N_supp <-(86400*Q*(Cadd*0.001))/(w*reachL)
@@ -536,13 +531,17 @@ mean(out$sw)
 mean(out$Uadd)
 mean(Hobo$TempC)
 mean(na.omit(datq$PO4_ugL))
+mean(na.omit(datq$DOC_mgL))
+N_alt<- mean(na.omit(datq$NO3_mgNL))
+N_supp <-(86400*Q*(N_alt*0.001))/(w*reachL)
+
 
 plot_out<- out[c(2:21),]
 
 ##########################
 ### GBL 2022-11-04 ##
 
-Hobo <-read.csv("./NA22_dat/GBL20221104/20775523_19_BOR.csv", skip=1)
+Hobo <-read.csv("./NA22_dat/GBL_20221104/20775523_19_BOR.csv", skip=1)
 summary(Hobo)
 names(Hobo)
 
@@ -600,7 +599,7 @@ z <- (Q/1000)/(w*v)
 z
 
 ## NH4 sample data ## 
-dat <- read.csv("./NA22_dat/GBL20221104/GBL20221104_NH4.csv")
+dat <- read.csv("./NA22_dat/GBL_20221104/GBL20221104_NH4v2.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%Y-%m-%d %H:%M:%S")
 str(dat)
 
@@ -623,13 +622,11 @@ datq <- dat[c(1:20),]
 Cadd <- mean(dat[c(21:22),c(4)])
 
 # 2. Correct for background concentrations (_C):
-#GB_NA$NO3_C <- (GB_NA$Results-0.021) 
-#GB_NA$NO3_CC <-replace(GB_NA$NO3_C, GB_NA$NO3_C<0, 0) # Na's produced in TMR calculations if 0
 datq$Nh4_C <- (datq$Nh4_mgNL) - Cadd
 datq$Nh4_C <-replace(datq$Nh4_C, datq$Nh4_C<0, 0)
 
 
-datq[17,9]= 349.1365
+datq[17,11]= 349.1365
 datq$SpCond_C <- c(datq$SpCond  - bg_SpCond)
 datq$SpCond_C <-replace(datq$SpCond_C, datq$SpCond_C<0, 0)
 
@@ -680,7 +677,7 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2),]
+out <- out[c(-1,-2,-6),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
 
@@ -703,6 +700,12 @@ mean(out$sw)
 mean(out$Uadd)
 mean(Hobo$TempC)
 mean(na.omit(datq$PO4_ugL))
+mean(na.omit(datq$DOC_mgL))
+
+N_alt<- mean(na.omit(datq$NO3_mgNL))
+N_supp <-(86400*Q*(N_alt*0.001))/(w*reachL)
+
+
 
 
 
