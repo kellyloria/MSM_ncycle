@@ -11,7 +11,7 @@ library(cowplot)
 ## ---------------------------
 ## GBU 2021-07-22
 # Read in the nitrogen uptake assay data:
-GB_NA <- read.csv("./NA21_dat/NA21_GB20210722.csv")
+GB_NA <- read.csv("/Users/kellyloria/Documents/UNR/Ncycle/MSM_ncycle/NA21_dat/samples/NA21_GB20210722.csv")
 GB_NA$datetime <- as.POSIXct(as.character(GB_NA$datetime), format="%m/%d/%y %H:%M:%S") ## modify the format to match your data
 # 
 
@@ -178,7 +178,7 @@ for (i in 2:nrow(GB_NA)) {
   out <- rbind(out, temp_out)
 }
 
-Cadd <- 0.021
+Cadd <- 0.025
 
 out <- out[-1,]
 out$sw<- -1/(out$kw)
@@ -223,7 +223,7 @@ max(out$Uadd)
 
 
 ## ---------------------------
-## GBU 2021-06-03
+## GBL 2021-06-03
 
 # Glenbrook 2021-06-23 lower
 # Read in the nitrogen uptake assay data:
@@ -406,202 +406,6 @@ GB_uptake<- plot_grid(
 # write.csv(x = out, file = "./BTC_out/GBL_BTC_20210603.csv", row.names = TRUE)
 
 N_supp <-(86400*(Q*0.25)*(Cadd*0.001))/(w*reachL)
-
-
-
-## ---------------------------
-## GBU 2021-06-03
-
-# Glenbrook 2021-06-23 lower
-# Read in the nitrogen uptake assay data:
-GB_NA <- read.csv("./NA21_dat/samples/GBL20210603sample.csv")
-GB_NA$datetime <- as.POSIXct(paste(GB_NA$date, GB_NA$time), format = "%m/%d/%y %H:%M:%S")
-
-
-qplot(datetime, NO3, data = GB_NA, geom="point") +
-  theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))+
-  scale_x_datetime(labels = date_format("%m/%d %H:%M"), 
-                   breaks = date_breaks("15 min"))
-
-# 
-# ## SPC data from HOBO
-GB_Hobo <-read.csv("./NA21_dat/GlenbrookNutAssay1_20775509.csv")
-summary(GB_Hobo)
-# 
-# 
-# modify the names to whatever names your sensor spits out # figure out the names after import by using names(dat)
-GB_Hobo <- GB_Hobo[,c("Date.Time",
-                      "Low.Range",
-                      "Temp")]
-# 
-colnames(GB_Hobo) <- c("DateTime","Cond","TempC")
-# # Convert DateTime
-GB_Hobo$DateTime <- as.POSIXct(as.character(GB_Hobo$DateTime), format="%m/%d/%y %H:%M")
-range(GB_Hobo$DateTime)
-GB_Hobo<-GB_Hobo[!duplicated(GB_Hobo$DateTime), ]
-# 
-GB_Hobo$SpCond <- GB_Hobo$Cond/(1-(25-GB_Hobo$TempC)*0.021/100)
-
-qplot(DateTime, SpCond, data = GB_Hobo, geom="point") +
-  theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
-
-# Adjust the time range:
-
-
-## Reach morphology estimates:
-##
-
-## Equation:
-Qint<-function(time, cond, bkg, condmass){
-  condcorr<-cond-bkg
-  ##below routine integrates
-  ydiff<- condcorr[-1]+ condcorr[-length(condcorr)]
-  condint<-sum(diff(time)*ydiff/2)
-  Q<-condmass/condint
-  Q }
-## (1) Determine the background conductivity
-sub_bg <- subset(GB_Hobo, DateTime <= as.POSIXct("2021-06-03 12:10:00")) #Lolomai
-bg_SpCond <- mean(sub_bg$SpCond)
-## (2) Estimate conductivity slug based on mass of Cl added
-SpCond_mass <- 2100*250
-## Calculate Q
-## Units = L/sec
-Q <- Qint(as.numeric(GB_Hobo$DateTime), GB_Hobo$SpCond, bg_SpCond, SpCond_mass)
-
-#######################
-## Estimate Velocity ##
-#######################
-inj_time <- as.POSIXct("2021-06-03 12:10:00") #Lolomai 
-peak_time <- GB_Hobo[which.max(GB_Hobo$SpCond),]$DateTime 
-time_diff_sec <- as.numeric(peak_time - inj_time)*60
-time_tota_sec <- (as.numeric(end_time - inj_time)) * 3600 # minutes
-
-## Velocity = distance in meters/time in seconds
-reachL <- 50
-v <- reachL/time_diff_sec
-v
-
-#############################
-## Estimate mean depth (z) ##
-#############################
-## effective depth (z) can be estimated using the following equation
-##
-## z = Q/(w*v)
-## where z is effective depth (m)
-## Q is discharge (m^3/sec)
-## w is average width (m)
-## v is velocity (m/sec)
-## Enter average width measurement in m
-w <- mean(c(1.1, 2.0, 1.12, 1.2, 1.72, 2.43, 1.21, 1.61, 0.52, 1.55))
-## Calculate effective depth in m
-#z <- (Q/1000)/(w*v)
-z <- 0.3125
-
-
-
-##
-## Left join hobo conductivity estimates with samples:
-##
-
-GB_NA <- left_join(GB_NA, GB_Hobo[c("DateTime", "SpCond")],
-                   by= c("datetime"="DateTime"))
-
-summary(GB_NA)
-
-#GB_NA <- subset(GB_NA, datetime >= as.POSIXct('2021-07-22 13:40:00'))
-
-
-qplot(datetime, NO3, data = GB_NA, geom="point") +
-  theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))+
-  scale_x_datetime(labels = date_format("%m/%d %H:%M"), 
-                   breaks = date_breaks("15 min"))
-
-
-
-##
-## Calculations Notes:
-##
-# 1. Correct for background concentrations (_C):
-#GB_NA$NO3_C <- (GB_NA$Results-0.021) 
-#GB_NA$NO3_CC <-replace(GB_NA$NO3_C, GB_NA$NO3_C<0, 0) # Na's produced in TMR calculations if 0
-GB_NA$NO3_C <- c(GB_NA$NO3) 
-
-#GB_NA[2,7] = 0.05
-GB_NA$SpCond_C <- c(GB_NA$SpCond - 326)
-#GB_NA$SpCond_C <-replace(GB_NA$SpCond_C, GB_NA$SpCond_C<0, 0)
-
-#No Cl samples so Cl approx.
-GB_NA$Cl_mgL <- ((0.05/0.105)*GB_NA$SpCond_C)
-
-qplot(Cl_mgL, NO3_C, data = GB_NA, geom="point") +
-  theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
-
-# Carboy concentrations 250g KNO3 in 10L carboy
-NO3mgL <- 50 * (1000) * (62/101) *(1/10)
-# Carboy concentrations 2000g NaCl in 10L carboy
-NaClmgL <- 250 * (1000) * (35.45/58.44) * (1/10)
-carboy <- NO3mgL/NaClmgL
-
-#mass recovery= 
-GB_NA$NtoNaCl <-  GB_NA$NO3_C/GB_NA$Cl_mgL
-GB_NA$NtoNaCllog <-  log(GB_NA$NO3_C/GB_NA$Cl_mgL)
-
-qplot(datetime, NtoNaCl, data = GB_NA, geom="point") +
-  theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
-
-GB_NA$massR <- (carboy)- GB_NA$NtoNaCl
-GB_NA$massRPer <- (1-((carboy)- GB_NA$NtoNaCl)/(carboy)) * 100
-
-
-# The added longitudinal uptake rate(kw-dyn) was calculated by plotting the logged N:Cl of the injectate and each grab sample against stream distance 
-# and then calculating the slope between each pair of points (injectate sample and each grab sample).
-GB_NA$carboy <- log(carboy)
-
-## way of iterating slope change between the row values
-out <- data.frame(Site = NA, datetime=as.POSIXct(NA), NO3=NA, Cl= NA, stamps = NA, slope_sample=NA, kw = NA)
-for (i in 2:nrow(GB_NA)) {
-  temp_dat <- GB_NA[c(i-1,i),]
-  slope_sample <- (temp_dat$NtoNaCllog[2]-temp_dat$NtoNaCllog[1])/(as.numeric(temp_dat$datetime[2] - temp_dat$datetime[1]))
-  kw <- (temp_dat$carboy[2]-temp_dat$NtoNaCllog[1])/(as.numeric(0-reachL))
-  datetime<- as.POSIXct((GB_NA$datetime[i]), format="%Y-%m-%d %H:%M:%S") 
-  NO3<- GB_NA$NO3_C[i]
-  Cl<- GB_NA$Cl_mgL[i]
-  temp_out <- data.frame(Site = "GBU", 
-                         stamps = paste(i, i-1, sep = "-"), 
-                         slope_sample = slope_sample, 
-                         kw=kw, 
-                         datetime=datetime,
-                         NO3=NO3,
-                         Cl=Cl)
-  out <- rbind(out, temp_out)
-}
-
-Cadd <- 0.003
-
-out <- out[-1,]
-out$sw<- -1/(out$kw)
-out$Uadd <- (Q*0.25)*Cadd/out$sw*w
-
-
-GB_uptake<- plot_grid(
-  ggplot(out, aes(NO3, sw)) + geom_point(),
-  ggplot(out, aes(NO3, Uadd)) + geom_point(), 
-  ggplot(out, aes(datetime, log(NO3/Cl))) + geom_point(),
-  ggplot(GB_Hobo, aes(DateTime, SpCond)) + geom_point(),
-  ncol=1, align="hv")
-
-# write.csv(x = out, file = "./BTC_out/GBL_BTC_20210603.csv", row.names = TRUE)
-
-N_supp <-(86400*(Q*0.25)*(Cadd*0.001))/(w*reachL)
-
-
-
-
-
-
-###########
-################################################################################################
-###########
 
 
 
@@ -921,15 +725,6 @@ w
 ## Calculate effective depth
 z <- (Q/1000)/(w*v)
 z
-
-
-
-
-
-
-
-
-
 
 
 # Adjust the time NO3 range:
