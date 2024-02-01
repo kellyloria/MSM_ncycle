@@ -148,11 +148,10 @@ for (i in 2:nrow(datq)) {
   out <- rbind(out, temp_out)
 }
 
-## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2),]
+## Cadd geometric mean of background concentrations 
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
-
+# out <- out[c(-1,-2),]
 
 GB_uptake<- plot_grid(
   ggplot(out, aes(NH4, sw)) + geom_point(),
@@ -253,10 +252,9 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
-
+# out <- out[c(-1,-2),]
 
 GB_uptake<- plot_grid(
   ggplot(out, aes(NO3, sw)) + geom_point(),
@@ -276,8 +274,6 @@ N_supp
 mean(na.omit(out$sw))
 mean(na.omit(out$Uadd))
 mean(Hobo$TempC)
-
-
 
 
 ####################
@@ -328,7 +324,7 @@ v <- reachL/time_diff_sec
 v
 
 ## Enter average width measurement in m
-w <- c(1.85)
+w <- mean(c(1.85, 2.13, 1.01, 1.13, 1.46, 2.04, 2.11, 2.00, 1.79, 1.69, 1.52, 1.77, 1.83, 2.0))
 ## Calculate effective depth
 z <- (Q/1000)/(w*v)
 z
@@ -410,10 +406,9 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2, -3),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
-
+# out <- out[c(-1,-2, -3),]
 
 GB_uptake<- plot_grid(
   ggplot(out, aes(NO3, sw)) + geom_point(),
@@ -424,7 +419,6 @@ GB_uptake<- plot_grid(
 GB_uptake
 
 # ggsave(plot = GB_uptake, filename = paste("./figures/GBU_NO3_220407.png",sep=""),width=4,height=7,dpi=300)
-
 # write.csv(x = out, file = "./BTC_out/GBU_NO3_BTC_220407.csv", row.names = TRUE)
 
 # estimate N supply:
@@ -463,7 +457,7 @@ str(Hobo)
 Hobo$SpCond <- Hobo$Cond/(1-(25-Hobo$TempC)*0.021/100)
 
 # Adjust the time range:
-Hobo <- subset(Hobo, DateTime >= as.POSIXct("2022-06-23 13:30:00") & DateTime <= as.POSIXct("2022-06-23 14:13:00"))
+Hobo <- subset(Hobo, DateTime >= as.POSIXct("2022-06-23 13:30:00") & DateTime <= as.POSIXct("2022-06-23 14:13:20"))
 qplot(DateTime, Cond, data = Hobo, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 
@@ -499,7 +493,7 @@ z
 
 
 ## NO3 sample data ## 
-dat <- read.csv("./NA22_dat/GBL20230623/GBU20220623_NO3.csv")
+dat <- read.csv("./NA22_dat/GBU_20220623/GBU20220623_NO3.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%Y-%m-%d %H:%M:%S")
 str(dat)
 
@@ -519,9 +513,10 @@ Cadd <- c(0.01)
 datq <- dat
 
 # 2. Correct for background concentrations (_C):
+datq[2,6] <-0.010
 datq$NO3_C <- (datq$NO3_mgNL) - Cadd
 datq$NO3_C <-replace(datq$NO3_C, datq$NO3_C <0, 0)
-datq[2,6] <-0.010
+
 
 datq$SpCond_C <- c(datq$SpCond  - bg_SpCond)
 datq$SpCond_C <-replace(datq$SpCond_C, datq$SpCond_C<0, 0)
@@ -548,7 +543,6 @@ qplot(datetime, NtoNaCllog, data = datq, geom="point") +
 datq$massR <- (carboy)- datq$NtoNaCl
 datq$massRPer <- (1-((carboy)- datq$NtoNaCl)/(carboy)) * 100
 
-
 # The added longitudinal uptake rate(kw-dyn) was calculated by plotting the logged N:Cl of the injectate and each grab sample against stream distance 
 # and then calculating the slope between each pair of points (injectate sample and each grab sample).
 datq$carboy <- log(carboy)
@@ -573,9 +567,10 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2, -3, -4,-5),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
+#out <- out[c(-1,-2, -3, -4,-5),]
+
 
 GB_uptake<- plot_grid(
   ggplot(out, aes(NO3, sw)) + geom_point(),
@@ -599,11 +594,6 @@ mean(na.omit(datq$PO4_ugL))
 Nalt <- mean(na.omit(datq$Nh4_mgNL))
 Nalt
 mean(na.omit(datq$DOC_mgL))
-###
-###
-###
-###
-###
 
 ## GBU 2022-06-23 NH4
 
@@ -662,7 +652,7 @@ z
 
 
 ## NH4 sample data ## 
-dat <- read.csv("/Users/kellyloria/Documents/UNR/Ncycle/MSM_ncycle/NA22_dat/GBU_20220623/GBU20220623_NH4v2.csv")
+dat <- read.csv("./NA22_dat/GBU_20220623/GBU20220623_NH4v2.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%m/%d/%y %H:%M:%S")
 str(dat)
 
@@ -678,7 +668,7 @@ qplot(datetime, Nh4_mgNL, data = dat, geom="point") +
 
 # 1. select the sample selection for: GBL_NH4
 ## Cadd geometric mean of background concentrations 
-Cadd <- mean(0.0028,0.0157)
+Cadd <- mean(c(0.0028,0.0157)) # from background sample and last run
 
 # GBL BTC ###
 # 1. select the sample selection for: GBL_NH4
@@ -718,7 +708,6 @@ qplot(datetime, NtoNaCllog, data = datq, geom="point") +
 datq$massR <- (carboy)- datq$NtoNaCl
 datq$massRPer <- (1-((carboy)- datq$NtoNaCl)/(carboy)) * 100
 
-
 # The added longitudinal uptake rate(kw-dyn) was calculated by plotting the logged N:Cl of the injectate and each grab sample against stream distance 
 # and then calculating the slope between each pair of points (injectate sample and each grab sample).
 datq$carboy <- log(carboy)
@@ -743,10 +732,9 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2, -3, -4),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
-
+# out <- out[c(-1,-2, -3, -4),]
 
 GB_uptake<- plot_grid(
   ggplot(out, aes(NH4, sw)) + geom_point(),
@@ -772,11 +760,7 @@ N_alt<-mean(na.omit(datq$NO3_mgNL))
 N_supp <-(86400*Q*(N_alt*0.001))/(w*reachL)
 
 
-###
-##
-##
-
-
+######################
 ## NO3 sample data ## 
 dat <- read.csv("./NA22_dat/GBU_20220623/GBU20220623_NO3.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%Y-%m-%d %H:%M:%S")
@@ -851,9 +835,9 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2, -3, -4,-5),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
+# out <- out[c(-1,-2, -3, -4,-5),]
 
 GB_uptake<- plot_grid(
   ggplot(out, aes(NO3, sw)) + geom_point(),
@@ -884,7 +868,6 @@ N_supp_alt <-(86400*Q*(Nalt*0.001))/(w*reachL)
 
 #################### 
 ## GBL NH4 2022-06-23 ##
-
 Hobo <-read.csv("./NA22_dat/GBL_20220623/GBLBOR20775520_220623NH4.csv", skip=1)
 summary(Hobo)
 names(Hobo)
@@ -1033,7 +1016,6 @@ GB_uptake<- plot_grid(
 GB_uptake
 
 # ggsave(plot = GB_uptake, filename = paste("./figures/GBL220103v2.png",sep=""),width=4,height=7,dpi=300)
-
 # write.csv(x = out, file = "./BTC_out/GBL_BTC_NH4_20220623.csv", row.names = TRUE)
 
 # estimate N supply:
@@ -1047,15 +1029,6 @@ N_alt<-mean(na.omit(dat$NO3_mgNL))
 N_supp <-(86400*Q*(N_alt*0.001))/(w*reachL)
 
 
-
-
-
-
-
-
-
-##
-##
 #################### 
 ## GBL NH4 2022-10-03 ##
 
@@ -1193,9 +1166,10 @@ for (i in 2:nrow(dat)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1, -2, -3),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
+
+# out <- out[c(-1, -2, -3),]
 
 
 GB_uptake<- plot_grid(
@@ -1204,11 +1178,9 @@ GB_uptake<- plot_grid(
   ggplot(out, aes(datetime, log(NH4/Cl))) + geom_point(),
   ggplot(Hobo, aes(DateTime, SpCond)) + geom_point(),
   ncol=1, align="hv")
-
 GB_uptake
 
 # ggsave(plot = GB_uptake, filename = paste("./figures/GBL220103v2.png",sep=""),width=4,height=7,dpi=300)
-
 # write.csv(x = out, file = "./BTC_out/GBL_BTC_NH4_20221003.csv", row.names = TRUE)
 
 # estimate N supply:
@@ -1223,6 +1195,35 @@ N_supp <-(86400*Q*(N_alt*0.001))/(w*reachL)
 
 ## 2022-10-03 NO3 ###
 ## NO3 sample data ## 
+
+Hobo <-read.csv("./NA22_dat/GBL_20221003/BORGBLandGBU20775520_12.csv", skip=1)
+summary(Hobo)
+names(Hobo)
+
+# modify the names to whatever names your sensor spits out # figure out the names after import by using names(dat) 
+Hobo <- Hobo[,c("Date.Time..GMT.07.00",
+                "Full.Range..μS.cm..LGR.S.N..20775520..SEN.S.N..20775520.",
+                "Temp...C..LGR.S.N..20775520..SEN.S.N..20775520.")]
+
+colnames(Hobo) <- c("DateTime","Cond","TempC")
+# Convert DateTime
+Hobo$DateTime <- as.POSIXct(as.character(Hobo$DateTime), format="%Y-%m-%dT%H:%M:%SZ") 
+range(Hobo$DateTime)
+str(Hobo)
+
+# 
+Hobo$SpCond <- Hobo$Cond/(1-(25-Hobo$TempC)*0.021/100)
+
+# Adjust the time range:
+Hobo <- subset(Hobo, DateTime >= as.POSIXct("2022-10-03 12:45:00") & DateTime <= as.POSIXct("2022-10-03 13:56:00"))
+
+qplot(DateTime, Cond, data = Hobo, geom="point") +
+  theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
+
+
+sub_bg <- subset(Hobo, DateTime >= as.POSIXct("2022-10-03 12:45:00") & DateTime <= as.POSIXct("2022-10-03 12:50:00")) #Lolomai
+bg_SpCond <- mean(sub_bg$SpCond)
+
 dat <- read.csv("./NA22_dat/GBL_20221003/GBL20221003_NO3.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%Y-%m-%d %H:%M:%S")
 str(dat)
@@ -1248,8 +1249,7 @@ Cadd <- mean(dat[c(22:23),c(6)])
 datq$NO3_C <- (datq$NO3_mgNL) - Cadd
 datq$NO3_C <-replace(datq$NO3_C, datq$NO3_C <0, 0)
 
-datq[12,11]= 820.127
-datq[21,11]= 388.6032
+datq[12,11]= 816.3366
 
 datq$SpCond_C <- c(datq$SpCond  - bg_SpCond)
 datq$SpCond_C <-replace(datq$SpCond_C, datq$SpCond_C<0, 0)
@@ -1280,7 +1280,6 @@ datq$massRPer <- (1-((carboy)- datq$NtoNaCl)/(carboy)) * 100
 # The added longitudinal uptake rate(kw-dyn) was calculated by plotting the logged N:Cl of the injectate and each grab sample against stream distance 
 # and then calculating the slope between each pair of points (injectate sample and each grab sample).
 datq$carboy <- log(carboy)
-datq<-datq[c(-7),]
 
 ## way of iterating slope change between the row values
 out <- data.frame(Site = NA, datetime=as.POSIXct(NA), NO3=NA, Cl= NA, stamps = NA, slope_sample=NA, kw = NA)
@@ -1302,10 +1301,8 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-3),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
-
 
 GB_uptake<- plot_grid(
   ggplot(out, aes(NO3, sw)) + geom_point(),
@@ -1316,7 +1313,6 @@ GB_uptake<- plot_grid(
 GB_uptake
 
 # ggsave(plot = GB_uptake, filename = paste("./figures/GBL_NO3_221003.png",sep=""),width=4,height=7,dpi=300)
-
 # write.csv(x = out, file = "./BTC_out/GBL_NO3_BTC_221003.csv", row.names = TRUE)
 
 # estimate N supply:
@@ -1332,27 +1328,8 @@ mean(na.omit(datq$DOC_mgL))
 
 N_supp_alt <-(86400*Q*(Nalt*0.001))/(w*reachL)
 
-#### M-M curve fit -- Error here.
-library(dr4pl)
-library(drc)
-
-model.drm1 <- drc::drm (Uadd ~ NH4, data = plot_out, fct = MM.3())
-summary(model.drm1)
-
-mm2 <- data.frame(NH4_C = seq(0, max(plot_out$NH4), length.out = 100))
-mm2$Uadd <- predict(model.drm1, newdata = mm2)
-
-
-Uadd_plotBW <- ggplot(plot_out, aes(x=NH4, y=Uadd)) + 
-  #ylim(0,20) + xlim(0,1500) + 
-  geom_line(data = mm2[-1,], aes(x = NH4_C, y = Uadd), colour = "black") +
-  geom_point(size = 3, shape= 17, col = "#a67d17") +
-  labs(x = expression(paste("Nitrate ugL")),
-       y= expression(paste("Uadd (", mu, "g m^-2 min^-1)"))) +
-  theme_classic() #+ annotate("text", x = c(45,40,40), y = c(20, 18, 16), label = c("Umax = 954.43", "Km = 24.21", "p = 0.002 "))
-
 #########################
-## GBL NH4 2022-10-03 ##
+## GBL NH4 2022-12-12 ##
 #########################
 
 Hobo <-read.csv("./NA22_dat/GBL_20221212/GBL_221212_20775520_BOR.csv", skip=1)
@@ -1401,7 +1378,7 @@ v <- c(reachL/time_diff_sec)
 v
 
 ## Enter average width measurement in m
-w <- mean(c(1.8, 2.2, 1.3, 1.2, 1.7, 2, 1.8, 2, 2))
+w <- mean(c(1.8, 2.2, 1.3, 1.2, 1.7, 2, 1.8, 2, 2, 1.6, 1.5, 1.9))
 w
 ## Calculate effective depth
 z <- (Q/1000)/(w*v)
@@ -1483,9 +1460,9 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2,-3,-19),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
+# out <- out[c(-1,-2,-3,-19),]
 
 
 GB_uptake<- plot_grid(
@@ -1651,9 +1628,9 @@ for (i in 2:nrow(datq)) {
 }
 
 ## Cadd geometric mean of background concetrations 
-out <- out[c(-1,-2, -3),]
 out$sw <- -1/(out$kw)
 out$Uadd <- Q*Cadd/out$sw*w
+# out <- out[c(-1,-2, -3),]
 
 
 GB_uptake<- plot_grid(
@@ -1677,9 +1654,6 @@ mean(na.omit(datq$PO4_ugL))
 mean(na.omit(datq$DOC_mgL))
 N_alt<- mean(na.omit(datq$NO3_mgNL))
 N_supp <-(86400*Q*(N_alt*0.001))/(w*reachL)
-
-
-plot_out<- out[c(2:21),]
 
 ##########################
 ### GBL 2022-11-04 ##
@@ -2059,9 +2033,6 @@ w <- mean(c(1.8, 2.2, 1.3, 1.2, 1.7, 2, 1.8, 2, 2))
 ## Calculate effective depth
 z <- (Q/1000)/(w*v)
 z
-
-
-
 
 dat <- read.csv("./NA22_dat/GBL_20221212/GBL20221212_NO3.csv")
 dat$datetime <- as.POSIXct(paste(dat$date, dat$time), format = "%Y-%m-%d %H:%M:%S")

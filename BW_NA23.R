@@ -407,7 +407,7 @@ v <- c(reachL/time_diff_sec)
 v
 
 ## Enter average width measurement in m
-w <- mean(c( 7.5, 8.2, 10.6, 8.02, 
+w <- mean(c(7.5, 8.2, 10.6, 8.02, 
              11.7, 3.8, 7.5, 10.5, 
              7.5, 8.3, 3.4, 3.1, 
              2.5, 3.5, 2.7))
