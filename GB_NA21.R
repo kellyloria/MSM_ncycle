@@ -11,7 +11,7 @@ library(cowplot)
 ## ---------------------------
 ## GBU 2021-07-22
 # Read in the nitrogen uptake assay data:
-GB_NA <- read.csv("/Users/kellyloria/Documents/UNR/Ncycle/MSM_ncycle/NA21_dat/samples/NA21_GB20210722.csv")
+GB_NA <- read.csv("/Users/kellyloria/Documents/UNR/Ncycle/NA21_dat/samples/NA21_GB20210722.csv")
 GB_NA$datetime <- as.POSIXct(as.character(GB_NA$datetime), format="%m/%d/%y %H:%M:%S") ## modify the format to match your data
 # 
 
@@ -22,18 +22,18 @@ qplot(datetime, Results, data = GB_NA, geom="point") +
 
 
 ## SPC data from HOBO
-GB_Hobo <-read.csv("./NA21_dat/GlenbrookNA20210722_20775520_4.csv", skip=1)
+GB_Hobo <-read.csv("/Users/kellyloria/Documents/UNR/Ncycle/2023_data_org/HOBO_files/GlenbrookNA20210722_20775520_4.csv")
 summary(GB_Hobo)
 
 
 # modify the names to whatever names your sensor spits out # figure out the names after import by using names(dat) 
-GB_Hobo <- GB_Hobo[,c("Date.Time..GMT.07.00",
-                      "Full.Range..μS.cm..LGR.S.N..20775520..SEN.S.N..20775520.",
-                      "Temp...C..LGR.S.N..20775520..SEN.S.N..20775520.")]
+GB_Hobo <- GB_Hobo[,c("Date.Time",
+                      "Full.Range",
+                      "Temp")]
 
 colnames(GB_Hobo) <- c("DateTime","Cond","TempC")
 # Convert DateTime
-GB_Hobo$DateTime <- as.POSIXct(as.character(GB_Hobo$DateTime), format="%y/%m/%d %H:%M:%S") 
+GB_Hobo$DateTime <- as.POSIXct(as.character(GB_Hobo$DateTime), format="%Y-%m-%dT%H:%M:%SZ") 
 range(GB_Hobo$DateTime)
 
 # 

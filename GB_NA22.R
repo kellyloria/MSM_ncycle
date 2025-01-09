@@ -457,7 +457,7 @@ str(Hobo)
 Hobo$SpCond <- Hobo$Cond/(1-(25-Hobo$TempC)*0.021/100)
 
 # Adjust the time range:
-Hobo <- subset(Hobo, DateTime >= as.POSIXct("2022-06-23 13:30:00") & DateTime <= as.POSIXct("2022-06-23 14:13:20"))
+Hobo <- subset(Hobo, DateTime >= as.POSIXct("2022-06-23 13:50:00") & DateTime <= as.POSIXct("2022-06-23 14:30:20"))
 qplot(DateTime, Cond, data = Hobo, geom="point") +
   theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
 

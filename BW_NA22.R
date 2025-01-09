@@ -718,7 +718,6 @@ str(dat)
 
 
 #BWL 2022-10-12 ###
-
 Hobo <-read.csv("./NA22_dat/BWL_20221012/20775520_13.csv", skip=1)
 summary(Hobo)
 names(Hobo)

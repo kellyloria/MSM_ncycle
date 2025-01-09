@@ -10,10 +10,12 @@ library(gridExtra)
 library(cowplot)
 library(drc)
 
+setwd("/Users/kellyloria/Documents/UNR/Ncycle/")
 ## ---------------------------
 
+# /Users/kellyloria/Documents/UNR/Ncycle/NA21_dat/samples/NA21_BW20210728.csv
 # Read in the nitrogen uptake assay data:
-BW_NA <- read.csv("./NA21_dat/NA21_BW20210728.csv")
+BW_NA <- read.csv("./NA21_dat/samples/NA21_BW20210728.csv")
 BW_NA$datetime <- as.POSIXct(as.character(BW_NA$datetime), format="%Y-%m-%d %H:%M:%S") ## modify the format to match your data
 # 
 summary(BW_NA)
