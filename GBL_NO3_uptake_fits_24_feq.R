@@ -31,7 +31,7 @@ GBL_no3_datq$Uadd_int1 <- ifelse(is.na(GBL_no3_datq$Uadd_int) | is.nan(GBL_no3_d
 GBL_no3_datq_210623 <- GBL_no3_datq%>%
   filter(date==as.Date("2021-06-23"))
 
-GBL_no3_datq_210623<-GBL_no3_datq_210623[c(-1,-2,-3,-4),]
+GBL_no3_datq_210623<-GBL_no3_datq_210623[c(-1,-2,-3,-4,-8, -9,-10,-11, -12),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_210623, fct = MM.2())
 summary(model.drm1)
@@ -50,23 +50,23 @@ std_error_e <- c(summary_drm$coefficients["e:(Intercept)", "Std. Error"])
 label_text <- sprintf("Uadd: %.3f ± %.3f", est_d, std_error_d)
 
 Uadd_plot_1<- ggplot(GBL_no3_datq_210623, aes(x = TMR_NO3*1000, y = Uadd_int1*1000, color = site)) +
-  geom_line(data = mm2, aes(x = TMR_NO3*1000, y = Uadd*1000),lty=3) +
+ # geom_line(data = mm2, aes(x = TMR_NO3*1000, y = Uadd*1000),lty=3) +
   geom_point(size = 2, shape = 19) +  # Color will come from site mapping
   scale_color_manual(values = site_colors) +
   labs(y=expression(U[add]~(μg~L^-1~s^-1)), x= expression(TMR~NO[3]~(μg~s^-1~L^-3))) + 
   theme_bw() +
-  annotate("text", x = max(GBL_no3_datq_210623$TMR_NO3 * 1000), 
-           y = min(GBL_no3_datq_210623$Uadd_int1 * 1000), 
-           label = label_text, 
-           hjust = 1, vjust = 0, size = 4, color = "grey25") +
-  facet_grid(.~date)
+  # annotate("text", x = max(GBL_no3_datq_210623$TMR_NO3 * 1000), 
+  #          y = min(GBL_no3_datq_210623$Uadd_int1 * 1000), 
+  #          label = label_text, 
+  #          hjust = 1, vjust = 0, size = 4, color = "grey25") +
+   facet_grid(.~date)
 
 
 #### 2
 GBL_no3_datq_210722 <- GBL_no3_datq%>%
   filter(date==as.Date("2021-07-22"))
 
-GBL_no3_datq_210722<-GBL_no3_datq_210722[c(-22,-23),]
+GBL_no3_datq_210722<-GBL_no3_datq_210722[c(-14,-15,-21,-22,-23),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_210722, fct = MM.2())
 summary(model.drm1)
@@ -112,7 +112,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_210722a$Vf_add_int))
 GBL_no3_datq_220407 <- GBL_no3_datq%>%
   filter(date==as.Date("2022-04-07"))
 
-GBL_no3_datq_220407<-GBL_no3_datq_220407[c(-11,-12,-13,-14,-15,-16),]
+GBL_no3_datq_220407<-GBL_no3_datq_220407[c(-3,-8,-10,-11,-12,-13,-14,-15,-16),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_220407, fct = MM.2())
 summary(model.drm1)
@@ -131,7 +131,7 @@ std_error_e <- c(summary_drm$coefficients["e:(Intercept)", "Std. Error"])
 label_text <- sprintf("Uadd: %.3f ± %.3f", est_d, std_error_d)
 
 Uadd_plot_3<- ggplot(GBL_no3_datq_220407, aes(x = TMR_NO3*1000, y = Uadd_int1*1000, color = site)) +
-  geom_line(data = mm2, aes(x = TMR_NO3*1000, y = Uadd*1000)) +
+  geom_line(data = mm2, aes(x = TMR_NO3*1000, y = Uadd*1000), lty=3) +
   geom_point(size = 2, shape = 19) +  # Color will come from site mapping
   scale_color_manual(values = site_colors) +
   labs(y=expression(U[add]~(μg~L^-1~s^-1)), x= expression(TMR~NO[3]~(μg~s^-1~L^-3))) + 
@@ -144,7 +144,7 @@ Uadd_plot_3<- ggplot(GBL_no3_datq_220407, aes(x = TMR_NO3*1000, y = Uadd_int1*10
 
 
 
-GBL_no3_datq_220407a<-GBL_no3_datq_220407[c(-1, -2, -3,-4),]
+GBL_no3_datq_220407a<-GBL_no3_datq_220407[c(-1, -2, -3,-4, ),]
 Uadd_plot_sw<- ggplot(GBL_no3_datq_220407a, aes(x = TMR_NO3*1000, y = sw, color = site)) +
   geom_point()
 Uadd_plot_sw
@@ -160,7 +160,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_220407a$Vf_add_int))
 GBL_no3_datq_220623 <- GBL_no3_datq%>%
   filter(date==as.Date("2022-06-23"))
 
-GBL_no3_datq_220623<-GBL_no3_datq_220623[c(-15),]
+GBL_no3_datq_220623<-GBL_no3_datq_220623[c(-13,-14,-15),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_220623, fct = MM.2())
 summary(model.drm1)
@@ -208,7 +208,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_220623a$Vf_add_int))
 GBL_no3_datq_220103 <- GBL_no3_datq%>%
   filter(date==as.Date("2022-10-03"))
 
-GBL_no3_datq_220103<-GBL_no3_datq_220103[c(-18,-19,-20,-21, -22),]
+GBL_no3_datq_220103<-GBL_no3_datq_220103[c(-16,-17,-18,-19,-20,-21,-22),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_220103, fct = MM.2())
 summary(model.drm1)
@@ -256,7 +256,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_220103a$Vf_add_int))
 GBL_no3_datq_221212 <- GBL_no3_datq%>%
   filter(date==as.Date("2022-12-12"))
 
-GBL_no3_datq_221212<-GBL_no3_datq_221212[c(-15, -16,-17, -18, -19, -20),]
+GBL_no3_datq_221212<-GBL_no3_datq_221212[c(-13,-14,-15, -16,-17, -18, -19, -20),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_221212, fct = MM.2())
 summary(model.drm1)
@@ -302,7 +302,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_221212a$Vf_add_int))
 GBL_no3_datq_230327 <- GBL_no3_datq%>%
   filter(date==as.Date("2023-03-27"))
 
-GBL_no3_datq_230327<-GBL_no3_datq_230327[c(-13,-14 -15, -16,-17),]
+GBL_no3_datq_230327<-GBL_no3_datq_230327[c(-11,-12,-13,-14,-15,-16,-17),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_230327, fct = MM.2())
 summary(model.drm1)
@@ -348,7 +348,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_221212a$Vf_add_int))
 GBL_no3_datq_230601 <- GBL_no3_datq%>%
   filter(date==as.Date("2023-06-01"))
 
-GBL_no3_datq_230601<-GBL_no3_datq_230601[c(-8,-9,-10,-11,-12),]
+GBL_no3_datq_230601<-GBL_no3_datq_230601[c(-6,-7,-8,-9,-10,-11,-12),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_230601, fct = MM.2())
 summary(model.drm1)
@@ -394,7 +394,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_230601$Vf_add_int))
 GBL_no3_datq_230615 <- GBL_no3_datq%>%
   filter(date==as.Date("2023-06-15"))
 
-GBL_no3_datq_230615<-GBL_no3_datq_230615[c(-10,-11,-12,-13, -14),]
+GBL_no3_datq_230615<-GBL_no3_datq_230615[c(-9,-10,-11,-12,-13, -14),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_230615, fct = MM.2())
 summary(model.drm1)
@@ -441,7 +441,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_230615$Vf_add_int))
 GBL_no3_datq_230710 <- GBL_no3_datq%>%
   filter(date==as.Date("2023-07-10"))
 
-GBL_no3_datq_230710<-GBL_no3_datq_230710[c(-10,-11,-12,-13),]
+GBL_no3_datq_230710<-GBL_no3_datq_230710[c(-7,-9,-10,-11,-12,-13),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_230710, fct = MM.2())
 summary(model.drm1)
@@ -487,7 +487,7 @@ v_sd <- sd(na.omit(GBL_no3_datq_230710$Vf_add_int))
 GBL_no3_datq_230808 <- GBL_no3_datq%>%
   filter(date==as.Date("2023-08-08"))
 
-GBL_no3_datq_230808<-GBL_no3_datq_230808[c(-10,-11,-12,-13,-14, -15, -16),]
+GBL_no3_datq_230808<-GBL_no3_datq_230808[c(-9,-10,-11,-12,-13,-14, -15, -16),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBL_no3_datq_230808, fct = MM.2())
 summary(model.drm1)
@@ -547,4 +547,4 @@ GBL_no3_grid <- ggarrange(Uadd_plot_1,
                       legend = "bottom")
 
 
-ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages\ /supp\ figures/GBL_no3_mmfits_grid.png", plot = GBL_no3_grid, width = 8.5, height = 7, units = "in")
+ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/GBL_no3_mmfits_grid_25.png", plot = GBL_no3_grid, width = 8.5, height = 8.5, units = "in")

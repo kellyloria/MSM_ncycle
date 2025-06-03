@@ -28,7 +28,7 @@ library(tidykml)
 library(sf)
 
 # get ploygons for watersheds from .kml map 
-kml_data <- st_read("/Users/kellyloria/Desktop/TempExtra/Tahoe_Soils_and_Hydro_Data.kml")
+kml_data <- st_read("/Users/kellyloria/Documents/Old\ mac\ transfer\ files\ 20241229/Desktop/TempExtra/Tahoe_Soils_and_Hydro_Data.kml")
 
 glimpse(kml_data)
 #filter for blackwood
@@ -46,7 +46,7 @@ ggplot() +
   geom_sf(data = GB_creek)
 
 # read in site cordinates
-dat <- read.csv("/Users/kellyloria/Downloads/TahoeCords_stream.csv", header = T, sep = ",")
+dat <- read.csv("/Users/kellyloria/Documents/Old\ mac\ transfer\ files\ 20241229/Downloads/TahoeCords_stream.csv", header = T, sep = ",")
 unique(dat$site)
 range(dat$long)
 range(dat$lat)
@@ -108,10 +108,10 @@ head(GB_df)
 
 # Plotting the ggmap object with the Watershed polygons
 lake_map_WS <- lake_map +
-  geom_polygon(data = blackwood_creek_df, aes(x = long, y = lat), color = "#054fb9", fill = NA, linewidth = 0.25, alpha=0.5) +
-  geom_polygon(data = GB_df, aes(x = long, y = lat), fill = NA, color = "#DD6E42", linewidth = 0.25, alpha=0.5)
+  geom_polygon(data = blackwood_creek_df, aes(x = long, y = lat), color = "#054fb9", fill = NA, linewidth = 0.5, alpha=0.5) +
+  geom_polygon(data = GB_df, aes(x = long, y = lat), fill = NA, color = "#DD6E42", linewidth = 0.5, alpha=0.5)
 
-# ggsave(plot = lake_map_WS, filename = paste("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages\ /supp\ figures/24_draft_lake_map_z13.png",sep=""),width=10,height=8,dpi=300)
+# ggsave(plot = lake_map_WS, filename = paste("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/25_draft_lake_map_z13.png",sep=""),width=10,height=8,dpi=300)
 
 scalebar(data = dat_e, dist = 1, location = "bottomright", dist_unit = "km", transform = TRUE)
 
@@ -122,70 +122,132 @@ scalebar(data = dat_e, dist = 1, location = "bottomright", dist_unit = "km", tra
 #######################################
 
 # Define the bounding box coordinates
-wbbox <- c(left = -120.179, bottom = 39.102, right = -120.145, top = 39.1441)
+wbbox <- c(left = -120.2730, bottom = 39.05, right = -120.100, top = 39.175)
 
 # Retrieve terrain map layer using get_stamenmap()
-map <- get_stadiamap(bbox = wbbox,  zoom = 18, maptype = 'stamen_terrain') 
+map <- get_stadiamap(bbox = wbbox,  zoom = 15, maptype = 'stamen_terrain') 
 
 # Plot the terrain map for BW without GPS points 
 stamen_map <- ggmap(map)
 stamen_map
 
 dat_w <-dat%>%
-  filter(site=="BWL"|site=="BWNS1"| site=="BWNS2"|site=="BWNS3"|site=="BWO"|
-           site=="SSNS1"| site=="SSNS2"| site=="SSNS3")
+  filter(site=="BWL"|site=="BWU"| site=="ST848"|site=="USGS_BW")
 
-library(ggmap)
-library(ggplot2)
-library(ggsn)
-library(dplyr)
-library(ggrepel)
-
-
-
-Westshore_zoom_map <- ggmap(map) + 
-  geom_point(data = dat_w, aes(x = long, y = lat, color = site), size = 2) +
-   geom_label_repel(data = dat, aes(x = long, y = lat, label = site), 
-                    color = "black", fontface = "bold", size = 3) +
-  xlab("Longitude") + ylab("Latitude") + theme_bw() + 
-  scale_color_manual(values = c("#4697bd", "#3283a8", "#3283a8", "#3283a8","#4697bd",
-                                "#136F63", "#136F63", "#136F63"),
+Westshore_zoom_map <- ggmap(map) +
+  geom_point(data = dat_w, aes(x = long, y = lat, color = site, shape = station_type), size = 4) +
+  # geom_label_repel(data = dat, aes(x = long, y = lat, label = site),
+  #                  color = "black", fontface = "bold", size = 3) +
+  xlab("Longitude") + ylab("Latitude") + theme_bw() +
+  scale_color_manual(values = site_colors,
                      guide = guide_legend(override.aes = list(label = ""))) +
+  scale_shape_manual(values = c(19, 0, 2)) +
   theme(
-    axis.text = element_text(size = 16),
-    axis.title = element_text(size = 16, colour = "black", face = "bold"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 12, colour = "black", face = "bold"),
     panel.border = element_rect(size = 1.5, colour = "black"),
-    legend.text = element_text(size = 16),
-    legend.title = element_text(size = 16, face = "bold"),
-    panel.grid = element_blank() 
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 12, face = "bold"),
+    panel.grid = element_blank()
   )
-Westshore_zoom_map
 
-# 
-# 
-# ## ### 
-# ## old map 
-# population_map <- ggmap(map) + 
-#   geom_point(data = dat_w, aes(x = long, y = lat, color = site), size = 2) +
-#   geom_label_repel(data = dat, aes(x = long, y = lat, label = site), 
-#                    color = "black", fontface = "bold", size = 3) +
-#   xlab("Longitude") + ylab("Latitude") + theme_bw() + 
-#   scale_color_manual(values = c("#4697bd", "#3283a8", "#3283a8", "#3283a8","#4697bd",
-#                                 "#136F63", "#136F63", "#136F63"),
-#                      guide = guide_legend(override.aes = list(label = ""))) +
-#   theme(
-#     axis.text = element_text(size = 16),
-#     axis.title = element_text(size = 16, colour = "black", face = "bold"),
-#     panel.border = element_rect(size = 1.5, colour = "black"),
-#     legend.text = element_text(size = 16),
-#     legend.title = element_text(size = 16, face = "bold"),
-#     panel.grid = element_blank() 
-#   )
-# 
-# ## ggsave(plot = population_map, filename = paste("/Users/kellyloria/Documents/UNR/Ncycle/MSM_ncycle/figures/23_BWzoom.png",sep=""),width=8,height=6,dpi=300)
-# # ggsave(plot = population_map, filename = paste("/Users/kellyloria/Documents/UNR/MSMmetab/SFS24_Analysis/figures/23_west_big_z13.png",sep=""),width=8,height=6,dpi=300)
-# 
-# 
+# Extracting coordinates from blackwood_creek
+coords <- st_coordinates(blackwood_creek)
+
+# Creating a data frame from the extracted coordinates
+blackwood_creek_df <- as.data.frame(coords)[,c(1,2)]
+names(blackwood_creek_df) <- c("long", "lat")  # Rename columns
+head(blackwood_creek_df)
+
+# Plotting the ggmap object with the Watershed polygons
+Westshore_zoom_map2 <- Westshore_zoom_map +
+  geom_polygon(data = blackwood_creek_df, aes(x = long, y = lat), color = "#054fb9", fill = NA, linewidth = 0.75, alpha=0.5) 
+
+# ggsave(plot = Westshore_zoom_map2, filename = paste("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/25_draft_lake_map_west_z13.png",sep=""),width=10,height=8,dpi=300)
+Westshore_zoom_map2
+
+
+# Add a custom scale bar to the top-right corner of the Westshore map
+Westshore_zoom_v3 <- Westshore_zoom_map2 +
+  geom_segment(aes(x = -120.13, xend = -120.12, y = 39.165, yend = 39.165), 
+               color = "black", size = 1.5) +  # Scale bar line (1 km)
+  annotate("text", x = -120.125, y = 39.166, label = "1 km", 
+           size = 4, hjust = 0.5, fontface = "bold") +  # Scale bar label
+  geom_polygon(data = blackwood_creek_df, aes(x = long, y = lat), 
+               color = "#054fb9", fill = NA, linewidth = 0.75, alpha = 0.5)  # Existing watershed polygon
+
+# Plot the updated map
+Westshore_zoom_v3
+
+
+# ggsave(plot = Westshore_zoom_v3, filename = paste("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/25_draft_lake_map_west_z13_v2.png",sep=""),width=10,height=8,dpi=300)
+Westshore_zoom_map2
+
+
+
+###############
+###############
+# Define the bounding box coordinates
+ebbox <- c(left = -119.979, bottom = 39.045, right = -119.863, top = 39.1709)
+
+# Retrieve terrain map layer using get_stamenmap()
+map <- get_stadiamap(bbox = ebbox,  zoom = 15, maptype = 'stamen_terrain') 
+
+# Plot the terrain map for BW without GPS points 
+stamen_map <- ggmap(map)
+stamen_map
+
+dat_e <-dat%>%
+  filter(site=="GBL"|site=="GBU"| site=="ST615"|site=="USGS_GB")
+
+Eastshore_zoom_map <- ggmap(map) +
+  geom_point(data = dat_e, aes(x = long, y = lat, color = site, shape = station_type), size = 4) +
+  # geom_label_repel(data = dat, aes(x = long, y = lat, label = site),
+  #                  color = "black", fontface = "bold", size = 3) +
+  xlab("Longitude") + ylab("Latitude") + theme_bw() +
+  scale_color_manual(values = site_colors,
+                     guide = guide_legend(override.aes = list(label = ""))) +
+  scale_shape_manual(values = c(19, 0, 2)) +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 12, colour = "black", face = "bold"),
+    panel.border = element_rect(size = 1.5, colour = "black"),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 12, face = "bold"),
+    panel.grid = element_blank()
+  )
+
+# Extracting coordinates from blackwood_creek
+coords <- st_coordinates(GB_creek)
+
+# Creating a data frame from the extracted coordinates
+GB_df <- as.data.frame(coords)[,c(1,2)]
+names(GB_df) <- c("long", "lat")  # Rename columns
+head(GB_df)
+
+# Plotting the ggmap object with the Watershed polygons
+lake_map_ES <- Eastshore_zoom_map +
+  geom_polygon(data = GB_df, aes(x = long, y = lat), fill = NA, color = "#DD6E42", linewidth = 0.75, alpha=0.5)
+
+lake_map_ES
+
+# ggsave(plot = lake_map_ES, filename = paste("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/25_draft_lake_e_map_z13.png",sep=""),width=10,height=8,dpi=300)
+
+
+
+# Add a custom scale bar
+lake_map_ES <- Eastshore_zoom_map +
+  geom_polygon(data = GB_df, aes(x = long, y = lat), fill = NA, color = "#DD6E42", linewidth = 0.75, alpha = 0.5) +
+  geom_segment(aes(x = -119.97, xend = -119.96, y = 39.05, yend = 39.05), color = "black", size = 1) +  # Scale bar line
+  annotate("text", x = -119.965, y = 39.051, label = "1 km", size = 4, hjust = 0.5)  # Label for scale bar
+
+# Plot the updated map
+lake_map_ES
+
+
+
+# ggsave(plot = lake_map_ES, filename = paste("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/25_draft_lake_e_map_v2.png",sep=""),width=10,height=8,dpi=300)
+
 
 
 

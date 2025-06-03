@@ -30,7 +30,7 @@ BWU_nh3_datq$Uadd_int1 <- ifelse(is.na(BWU_nh3_datq$Uadd_int) | is.nan(BWU_nh3_d
 BWU_nh3_datq_220824 <- BWU_nh3_datq%>%
   filter(date==as.Date("2022-08-24"))
 
-BWU_nh3_datq_220824<-BWU_nh3_datq_220824[c(-23,-24,-25),]
+BWU_nh3_datq_220824<-BWU_nh3_datq_220824[c(-22,-23,-24,-25),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NH3, data = BWU_nh3_datq_220824, fct = MM.2())
 summary(model.drm1)
@@ -78,7 +78,7 @@ v_sd <- sd(na.omit(BWU_nh3_datq_220824a$Vf_add_int))
 BWU_nh3_datq_221012 <- BWU_nh3_datq%>%
   filter(date==as.Date("2022-10-12"))
 
-BWU_nh3_datq_221012<-BWU_nh3_datq_221012[c(-15),]
+BWU_nh3_datq_221012<-BWU_nh3_datq_221012[c(-1,-2,-3,-14,-15),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NH3, data = BWU_nh3_datq_221012, fct = MM.2())
 summary(model.drm1)
@@ -156,7 +156,7 @@ Uadd_plot_3<- ggplot(BWU_nh3_datq_23078, aes(x = TMR_NH3*1000, y = Uadd_int1*100
 BWU_nh3_datq_230810 <- BWU_nh3_datq%>%
   filter(date==as.Date("2023-08-10"))
 
-BWU_nh3_datq_230810<-BWU_nh3_datq_230810[c(-10,-11,-12,-13,-14,-15,-16, -17,-18),]
+BWU_nh3_datq_230810<-BWU_nh3_datq_230810[c(-7,-8,-9,-10,-11,-12,-13,-14,-15,-16, -17,-18),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NH3, data = BWU_nh3_datq_230810, fct = MM.2())
 summary(model.drm1)
@@ -203,7 +203,7 @@ v_sd <- sd(na.omit(BWU_nh3_datq_230810a$Vf_add_int))
 BWU_nh3_datq_230925 <- BWU_nh3_datq%>%
   filter(date==as.Date("2023-09-25"))
 
-BWU_nh3_datq_230925<-BWU_nh3_datq_230925[c(-15,-16,-17,-18),]
+BWU_nh3_datq_230925<-BWU_nh3_datq_230925[c(-1,-14,-15,-16,-17,-18),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NH3, data = BWU_nh3_datq_230925, fct = MM.2())
 summary(model.drm1)
@@ -248,7 +248,7 @@ GBL_nh4_grid <- ggarrange(Uadd_plot_1,
                       legend = "bottom")
 
 
-ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages\ /supp\ figures/BWU_nh4_mmfits_grid.png", plot = GBL_nh4_grid, width = 8, height = 4, units = "in")
+ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/BWU_nh4_mmfits_grid.png", plot = GBL_nh4_grid, width = 8, height = 4.2, units = "in")
 
 
 

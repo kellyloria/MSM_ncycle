@@ -66,7 +66,7 @@ Uadd_plot_1<- ggplot(GBU_no3_datq_210623, aes(x = TMR_NO3*1000, y = Uadd_int1*10
 GBU_no3_datq_220407 <- GBU_no3_datq%>%
   filter(date==as.Date("2022-04-07"))
 
-GBU_no3_datq_220407<-GBU_no3_datq_220407[c(-16,-17,-18,-19,-20),]
+GBU_no3_datq_220407<-GBU_no3_datq_220407[c(-14,-15,-16,-17,-18,-19,-20),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBU_no3_datq_220407, fct = MM.2())
 summary(model.drm1)
@@ -111,7 +111,7 @@ v_sd <- sd(na.omit(GBU_nh3_datq_230615a$Vf_add_int))
 GBU_no3_datq_220623 <- GBU_no3_datq%>%
   filter(date==as.Date("2022-06-23"))
 
-GBU_no3_datq_220623<-GBU_no3_datq_220623[c(-17,-18,-19),]
+GBU_no3_datq_220623<-GBU_no3_datq_220623[c(-16,-17,-18,-19),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBU_no3_datq_220623, fct = MM.2())
 summary(model.drm1)
@@ -157,7 +157,7 @@ v_sd <- sd(na.omit(GBU_nh3_datq_230615a$Vf_add_int))
 GBU_no3_datq_221003 <- GBU_no3_datq%>%
   filter(date==as.Date("2022-10-03"))
 
-GBU_no3_datq_221003<-GBU_no3_datq_221003[c(-13,-14,-15,-16,-17,-18,-19),]
+GBU_no3_datq_221003<-GBU_no3_datq_221003[c(-11,-12,-13,-14,-15,-16,-17,-18,-19),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBU_no3_datq_221003, fct = MM.2())
 summary(model.drm1)
@@ -205,7 +205,7 @@ v_sd <- sd(na.omit(GBU_nh3_datq_230615a$Vf_add_int))
 GBU_no3_datq_230615 <- GBU_no3_datq%>%
   filter(date==as.Date("2023-06-15"))
 
-GBU_no3_datq_230615<-GBU_no3_datq_230615[c(-12,-13),]
+GBU_no3_datq_230615<-GBU_no3_datq_230615[c(-10,-11,-12,-13),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBU_no3_datq_230615, fct = MM.2())
 summary(model.drm1)
@@ -252,7 +252,7 @@ v_sd <- sd(na.omit(GBU_nh3_datq_230615a$Vf_add_int))
 GBU_no3_datq_230710 <- GBU_no3_datq%>%
   filter(date==as.Date("2023-07-10"))
 
-GBU_no3_datq_230710<-GBU_no3_datq_230710[c(-9,-10,-11,-12,-13, -14),]
+GBU_no3_datq_230710<-GBU_no3_datq_230710[c(-8,-9,-10,-11,-12,-13, -14),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBU_no3_datq_230710, fct = MM.2())
 summary(model.drm1)
@@ -302,7 +302,7 @@ v_sd <- sd(na.omit(GBU_nh3_datq_230615a$Vf_add_int))
 GBU_no3_datq_230808 <- GBU_no3_datq%>%
   filter(date==as.Date("2023-08-08"))
 
-GBU_no3_datq_230808<-GBU_no3_datq_230808[c(-10,-11,-12,-13,-14, -15),]
+GBU_no3_datq_230808<-GBU_no3_datq_230808[c(-9,-10,-11,-12,-13,-14, -15),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = GBU_no3_datq_230808, fct = MM.2())
 summary(model.drm1)
@@ -360,7 +360,7 @@ GBL_nh4_grid <- ggarrange(Uadd_plot_1,
                       legend = "bottom")
 
 
-ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages\ /supp\ figures/GBU_no3_mmfits_grid.png", plot = GBL_nh4_grid, width = 8.5, height = 5.5, units = "in")
+ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/GBU_no3_mmfits_grid.png", plot = GBL_nh4_grid, width = 8.5, height = 7.5, units = "in")
 
 
 

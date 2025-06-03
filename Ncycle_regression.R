@@ -15,7 +15,7 @@ catch_colors <- c(
 )
 
 # Create a sequence of dates
-date_seq <- seq(from = as.Date("2021-03-20"), to = as.Date("2024-10-10"), by = "day")
+date_seq <- seq(from = as.Date("2021-03-12"), to = as.Date("2024-10-10"), by = "day")
 
 # Convert the sequence to a dataframe
 date_df <- data.frame(date = date_seq)
@@ -60,7 +60,7 @@ comparisons <- list(
 ####
 date_datf <- water_year(date_datf)
 
-covariat_dat <- readRDS("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages\ /data/CH1_covariate_dat.rds") %>%
+covariat_dat <- readRDS("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/data/CH1_covariate_dat.rds") %>%
   dplyr::select("date", "Site","bulk.density","AFDM_mgg","AFDM_mgcm2", "Chla_ugL_Q", "Pheo_ugL_Q")
 summary(covariat_dat)
 
@@ -104,7 +104,7 @@ SPC_dat <- rbind(SPC_BWL, SPC_BWU, SPC_GBL, SPC_GBU)
 SPC_datD <- SPC_dat%>%
   mutate(date =as.Date(datetime))%>%
   group_by(site, date) %>%
-  summarise(
+ dplyr:: summarise(
     wt= mean(wtr, na.rm=T),
     wt_sd= sd(wtr, na.rm=T),
     SPC_m=mean(SPC, na.rm=T),
@@ -124,12 +124,12 @@ covariat_datq <- covariat_datq%>%
 
 ### 
 ## Bring in WQ data : 
-BWL_DO <- readRDS("/Users/kellyloria/Documents/UNR/MSMmetab/23_CleanDat/DO_dat/24_BWL_DO_flag_sat_light.rds")
+BWL_DO <- readRDS("/Users/kellyloria/Documents/Publications/2024_stream_metab_output/input_data/25_BWL_DO_flag_sat_light_v2.rds")
 
 BWL_DO_D <- BWL_DO%>%
   mutate(date =as.Date(datetime))%>%
   group_by(date) %>%
-  summarise(
+dplyr::  summarise(
     wtemp= mean(wtr, na.rm=T),
     wtemp_sd= sd(wtr, na.rm=T),
     do_sat_m=mean(DO.sat, na.rm=T),
@@ -139,12 +139,12 @@ BWL_DO_D <- BWL_DO%>%
 
 BWL_DO_D$site <- "BWL"
 
-BWU_DO <- readRDS("/Users/kellyloria/Documents/UNR/MSMmetab/23_CleanDat/DO_dat/24_BWU_DO_flag_sat_light.rds")
+BWU_DO <- readRDS("/Users/kellyloria/Documents/Publications/2024_stream_metab_output/input_data/25_BWU_DO_flag_sat_light_v2.rds")
 
 BWU_DO_D <- BWU_DO%>%
   mutate(date =as.Date(datetime))%>%
   group_by(date) %>%
-  summarise(
+ dplyr:: summarise(
     wtemp= mean(wtr, na.rm=T),
     wtemp_sd= sd(wtr, na.rm=T),
     do_sat_m=mean(DO.sat, na.rm=T),
@@ -153,11 +153,12 @@ BWU_DO_D <- BWU_DO%>%
     Q_sd=sd(dischargeCMS, na.rm=T))
 BWU_DO_D$site <- "BWU"
 
-GBL_DO <- readRDS("/Users/kellyloria/Documents/UNR/MSMmetab/23_CleanDat/DO_dat/24_GBL_DO_flag_sat_light.rds")
+GBL_DO <- readRDS("/Users/kellyloria/Documents/Publications/2024_stream_metab_output/input_data/25_GBL_DO_flag_sat_light_v2.rds")
+
 GBL_DO_D <- GBL_DO%>%
   mutate(date =as.Date(datetime))%>%
   group_by(date) %>%
-  summarise(
+ dplyr:: summarise(
     wtemp= mean(wtr, na.rm=T),
     wtemp_sd= sd(wtr, na.rm=T),
     do_sat_m=mean(DO.sat, na.rm=T),
@@ -167,12 +168,12 @@ GBL_DO_D <- GBL_DO%>%
 GBL_DO_D$site <- "GBL"
 
 
-GBU_DO <- readRDS("/Users/kellyloria/Documents/UNR/MSMmetab/23_CleanDat/DO_dat/24_GBU_DO_flag_sat.rds")
+GBU_DO <- readRDS("/Users/kellyloria/Documents/Publications/2024_stream_metab_output/input_data/25_GBU_DO_flag_sat_light_v2.rds")
 
 GBU_DO_D <- GBU_DO%>%
   mutate(date =as.Date(datetime))%>%
   group_by(date) %>%
-  summarise(
+dplyr::summarise(
     wtemp= mean(wtr, na.rm=T),
     wtemp_sd= sd(wtr, na.rm=T),
     do_sat_m=mean(DO.sat, na.rm=T),
@@ -184,7 +185,7 @@ GBU_DO_D$site <- "GBU"
 DO_dat <- rbind(GBU_DO_D, GBL_DO_D, BWU_DO_D, BWL_DO_D)
 
 ### N-uptake metrics
-n_up <- read.csv("/Users/kellyloria/Documents/UNR/Ncycle/BTC_N_Table_2024.csv")%>%
+n_up <- read.csv("/Users/kellyloria/Documents/UNR/Ncycle/BTC_N_Table_2025.csv")%>%
   mutate(date = as.Date(date, format="%m/%d/%y")) 
 
 covariat_datq <- covariat_datq%>%
@@ -1103,4 +1104,1280 @@ up_grid3 <- ggarrange(
   legend = "bottom")
 
 # ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages\ /supp\ figures/Draft_figure3_CH1_grid.png", plot = up_grid3, width = 14, height = 10, units = "in")
+
+
+## ======================
+## Gear switch for n uptake 
+
+### N-uptake metrics
+n_upt <- read.csv("/Users/kellyloria/Documents/UNR/Ncycle/BTC_N_Table_2025_figure.csv")%>%
+  mutate(date = as.Date(date, format="%m/%d/%y")) 
+
+str(n_upt)
+
+
+covariat_datN <- covariat_datq %>%
+  left_join(n_upt,by=c("date", "site"))
+
+covariat_datN <- covariat_datN %>%
+  mutate(jday= lubridate::yday(date))
+
+
+str(covariat_datq)
+hist(covariat_datq$Chla_ugL_Q)
+hist(covariat_datq$AFDM_mgcm2)
+hist(log(covariat_datq$AFDM_mgcm2/covariat_datq$Chla_ugL_Q)+1)
+
+ggplot(covariat_datN, aes(x=jday, y = (Uadd_ug_L_min), color =site, shape=success)) + 
+  geom_point(size=2, alpha=0.95) + theme_bw() + scale_color_manual(values = site_colors) +
+  facet_grid(.~method, scales = "free") + geom_smooth(method="lm", se=F)
+
+ggplot(covariat_datN, aes(x=jday, y = (Uadd_ug_L_min), color =site, shape=success)) + 
+  geom_point(size=2, alpha=0.95) + theme_bw() + scale_color_manual(values = site_colors) +
+  facet_grid(.~method, scales = "free") + geom_smooth(method="lm", se=F)
+
+ggplot(covariat_datN, aes(x=AFDM_mgcm2, y = (Uadd_ug_L_min), color =site)) + 
+  geom_point(size=2, alpha=0.5) + theme_bw() + scale_color_manual(values = site_colors) +
+  facet_grid(.~method, scales = "free") + geom_smooth(method="lm", se=F)
+
+ggplot(covariat_datN, aes(x=Chla_ugL_Q, y = (Uadd_ug_L_min), color =site)) + 
+  geom_point(size=2, alpha=0.5) + theme_bw() + scale_color_manual(values = site_colors) +
+  facet_grid(.~method, scales = "free") + geom_smooth(method="lm", se=F)
+
+ggplot(covariat_datN, aes(x=AFDM_mgg, y = (Uadd_ug_L_min), color =site)) + 
+  geom_point(size=2, alpha=0.5) + theme_bw() + scale_color_manual(values = site_colors) +
+  facet_grid(.~method, scales = "free") + geom_smooth(method="lm", se=F)
+
+ggplot(covariat_datN, aes(x=(AFDM_mgcm2/Chla_ugL_Q), y = (Uadd_ug_L_min), color =site)) + 
+  geom_point(size=2, alpha=0.5) + theme_bw() + scale_color_manual(values = site_colors) +
+  facet_grid(.~method, scales = "free") + geom_smooth(method="lm", se=F)
+
+
+
+### quick look at lms for n
+hist(covariat_datN$Uadd.in.ug.L.min)
+hist(log(covariat_datN$Uadd.in.ug.L.min+1))
+
+NO3_covar <- covariat_datN%>%
+  filter(method=="NO3" & site=="BWU")
+
+BW_no3_mod <- lm(Vf_m_min~ scale(AFDM_mgcm2), data = NO3_covar)
+summary(BW_no3_mod)
+
+BW_no3_mod <- lm(Vf_m_min~ scale(Chla_ugL_Q), data = NO3_covar)
+summary(BW_no3_mod)
+
+BW_no3_mod <- lm(Vf_m_min~ scale(AFDM_mgg), data = NO3_covar)
+summary(BW_no3_mod)
+
+BW_no3_mod <- lm(Vf_m_min~ scale(jday), data = NO3_covar)
+summary(BW_no3_mod)
+
+BW_no3_mod <- lm(Vf_m_min~ scale(NO3_mgL_dl), data = NO3_covar)
+summary(BW_no3_mod)
+
+BW_no3_mod <- lm(Vf_m_min~ scale(NH4_mgL_dl), data = NO3_covar)
+summary(BW_no3_mod)
+
+
+NH4_covar <- covariat_datN%>%
+  filter(method=="NH3" & site=="BWL")
+
+BW_nh4_mod <- lm(Uadd_ug_L_min~ scale(AFDM_mgcm2), data = NH4_covar)
+summary(BW_nh4_mod)
+
+BW_nh4_mod <- lm(Uadd_ug_L_min~ scale(Chla_ugL_Q), data = NH4_covar)
+summary(BW_nh4_mod)
+
+BW_nh4_mod <- lm(Uadd_ug_L_min~ scale(Pheo_ugL_Q), data = NH4_covar)
+summary(BW_nh4_mod)
+
+BW_nh4_mod <- lm(Uadd_ug_L_min~ scale(AFDM_mgg), data = NH4_covar)
+summary(BW_nh4_mod)
+
+BW_nh4_mod <- lm(Uadd_ug_L_min~ scale(jday), data = NH4_covar)
+summary(BW_nh4_mod)
+
+BW_nh4_mod <- lm(Uadd_ug_L_min~ scale(NH4_mgL_dl), data = NH4_covar)
+summary(BW_nh4_mod)
+
+
+
+#####
+#####
+## Looping through lm at each site for uptake 
+
+library(dplyr)
+library(broom) # For tidy summaries of model outputs
+
+BWL_NO3 <- covariat_datN%>%
+  filter(site=="BWL" & method == "NO3")
+
+# Filter data by site and method
+site_methods <- list(
+  list(site = "BWL", method = "NO3")
+  # list(site = "BWL", method = "NH3"),
+  # list(site = "GBL", method = "NO3"),
+  # list(site = "GBL", method = "NH3"),
+  # list(site = "BWU", method = "NO3"),
+  # list(site = "BWU", method = "NH3"),
+  # list(site = "GBU", method = "NO3"),
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- BWL_NO3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Uadd_ug_L_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+         ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+
+# View or export table
+print(final_table)
+# Write table to CSV if needed
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/BWL_NO3_Uadd_model.csv", row.names = FALSE)
+getwd()
+
+
+
+BWL_NH3 <- covariat_datN%>%
+  filter(site=="BWL" & method == "NH3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+   list(site = "BWL", method = "NH3")
+  # list(site = "GBL", method = "NO3"),
+  # list(site = "GBL", method = "NH3"),
+  # list(site = "BWU", method = "NO3"),
+  # list(site = "BWU", method = "NH3"),
+  # list(site = "GBU", method = "NO3"),
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- BWL_NH3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Uadd_ug_L_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+
+# View or export table
+print(final_table)
+# Write table to CSV if needed
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/BWL_NH3_Uadd_model.csv", row.names = FALSE)
+getwd()
+
+
+
+
+BWU_NH3 <- covariat_datN%>%
+  filter(site=="BWU" & method == "NH3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  # list(site = "GBL", method = "NO3"),
+  # list(site = "GBL", method = "NH3"),
+  # list(site = "BWU", method = "NO3"),
+   list(site = "BWU", method = "NH3")
+  # list(site = "GBU", method = "NO3"),
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- BWU_NH3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Uadd_ug_L_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+
+# View or export table
+print(final_table)
+# Write table to CSV if needed
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/BWU_NH3_Uadd_model.csv", row.names = FALSE)
+
+
+
+
+BWU_NO3 <- covariat_datN%>%
+  filter(site=="BWU" & method == "NO3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  # list(site = "GBL", method = "NO3"),
+  # list(site = "GBL", method = "NH3"),
+   list(site = "BWU", method = "NO3")
+  #list(site = "BWU", method = "NH3")
+  # list(site = "GBU", method = "NO3"),
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- BWU_NO3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Uadd_ug_L_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+
+# View or export table
+print(final_table)
+# Write table to CSV if needed
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/BWU_NH3_Uadd_model.csv", row.names = FALSE)
+
+
+
+
+###
+
+
+GBU_NO3 <- covariat_datN%>%
+  filter(site=="GBU" & method == "NO3")
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  # list(site = "GBL", method = "NO3"),
+  # list(site = "GBL", method = "NH3"),
+  #list(site = "BWU", method = "NO3")
+  #list(site = "BWU", method = "NH3")
+   list(site = "GBU", method = "NO3")
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- GBU_NO3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Uadd_ug_L_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+
+# View or export table
+print(final_table)
+# Write table to CSV if needed
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBU_NO3_Uadd_model.csv", row.names = FALSE)
+
+
+
+GBU_NH3 <- covariat_datN%>%
+  filter(site=="GBU" & method == "NH3")
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  # list(site = "GBL", method = "NO3"),
+  # list(site = "GBL", method = "NH3"),
+  #list(site = "BWU", method = "NO3")
+  #list(site = "BWU", method = "NH3")
+  #list(site = "GBU", method = "NO3")
+   list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- GBU_NH3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Uadd_ug_L_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+
+# View or export table
+print(final_table)
+# Write table to CSV if needed
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBU_NH3_Uadd_model.csv", row.names = FALSE)
+
+
+
+
+
+
+GBL_NH3 <- covariat_datN%>%
+  filter(site=="GBL" & method == "NH3")
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  # list(site = "GBL", method = "NO3"),
+   list(site = "GBL", method = "NH3")
+  #list(site = "BWU", method = "NO3")
+  #list(site = "BWU", method = "NH3")
+  #list(site = "GBU", method = "NO3")
+  #list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- GBL_NH3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Uadd_ug_L_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBL_NH3_Uadd_model.csv", row.names = FALSE)
+
+
+
+GBL_NO3 <- covariat_datN%>%
+  filter(site=="GBL" & method == "NH3")
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+   list(site = "GBL", method = "NO3")
+  #list(site = "GBL", method = "NH3")
+  #list(site = "BWU", method = "NO3")
+  #list(site = "BWU", method = "NH3")
+  #list(site = "GBU", method = "NO3")
+  #list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- GBL_NO3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Uadd_ug_L_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBL_NO3_Uadd_model.csv", row.names = FALSE)
+
+## ===================
+#### For Vf? 
+
+BWL_NO3 <- covariat_datN%>%
+  filter(site=="BWL" & method == "NO3")
+
+# Filter data by site and method
+site_methods <- list(
+  list(site = "BWL", method = "NO3")
+  # list(site = "BWL", method = "NH3"),
+  # list(site = "GBL", method = "NO3"),
+  # list(site = "GBL", method = "NH3"),
+  # list(site = "BWU", method = "NO3"),
+  # list(site = "BWU", method = "NH3"),
+  # list(site = "GBU", method = "NO3"),
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- BWL_NO3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Vf_m_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/BWL_NO3_vf_model.csv", row.names = FALSE)
+getwd()
+
+
+
+#######
+BWL_NO3 <- covariat_datN%>%
+  filter(site=="BWL" & method == "NH3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  list(site = "BWL", method = "NH3")
+  # list(site = "GBL", method = "NO3"),
+  # list(site = "GBL", method = "NH3"),
+  # list(site = "BWU", method = "NO3"),
+  # list(site = "BWU", method = "NH3"),
+  # list(site = "GBU", method = "NO3"),
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- BWL_NO3 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Vf_m_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/BWL_NH3_vf_model.csv", row.names = FALSE)
+
+
+
+#######
+dat<- covariat_datN%>%
+  filter(site=="GBL" & method == "NO3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+   list(site = "GBL", method = "NO3")
+  # list(site = "GBL", method = "NH3"),
+  # list(site = "BWU", method = "NO3"),
+  # list(site = "BWU", method = "NH3"),
+  # list(site = "GBU", method = "NO3"),
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- dat 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Vf_m_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBL_NO3_vf_model.csv", row.names = FALSE)
+
+
+
+#######
+dat<- covariat_datN%>%
+  filter(site=="GBL" & method == "NH3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  #list(site = "GBL", method = "NO3")
+   list(site = "GBL", method = "NH3")
+  # list(site = "BWU", method = "NO3"),
+  # list(site = "BWU", method = "NH3"),
+  # list(site = "GBU", method = "NO3"),
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- dat 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Vf_m_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBL_NH3_vf_model.csv", row.names = FALSE)
+
+
+
+
+
+#######
+dat<- covariat_datN%>%
+  filter(site=="GBU" & method == "NO3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  #list(site = "GBL", method = "NO3")
+  #list(site = "GBL", method = "NH3")
+  # list(site = "BWU", method = "NO3"),
+  # list(site = "BWU", method = "NH3"),
+   list(site = "GBU", method = "NO3")
+  # list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- dat 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Vf_m_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBU_NO3_vf_model.csv", row.names = FALSE)
+
+
+
+
+
+#######
+dat<- covariat_datN%>%
+  filter(site=="GBU" & method == "NH3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  #list(site = "GBL", method = "NO3")
+  #list(site = "GBL", method = "NH3")
+  # list(site = "BWU", method = "NO3"),
+  # list(site = "BWU", method = "NH3"),
+  #list(site = "GBU", method = "NO3")
+   list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- dat 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Vf_m_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBU_NH3_vf_model.csv", row.names = FALSE)
+
+
+
+
+#######
+dat<- covariat_datN%>%
+  filter(site=="GBU" & method == "NO3")
+
+# Filter data by site and method
+site_methods <- list(
+  #list(site = "BWL", method = "NO3")
+  #list(site = "BWL", method = "NH3")
+  #list(site = "GBL", method = "NO3")
+  #list(site = "GBL", method = "NH3")
+  # list(site = "BWU", method = "NO3")
+  # list(site = "BWU", method = "NH3")
+  list(site = "GBU", method = "NO3")
+  #list(site = "GBU", method = "NH3")
+)
+
+# Variables to model
+covariates <- c("scale(AFDM_mgcm2)", 
+                "scale(Chla_ugL_Q)", 
+                "scale(Pheo_ugL_Q)", 
+                "scale(AFDM_mgg)", 
+                "scale(jday)", 
+                "scale(NO3_mgL_dl)", 
+                "scale(NH4_mgL_dl)")
+
+# Placeholder for results
+results <- data.frame()
+
+# Loop through sites, methods, and covariates
+for (site_method in site_methods) {
+  site <- site_method$site
+  method <- site_method$method
+  
+  # Filter data
+  data_filtered <- dat 
+  # Check if there are data for this site and method
+  if (nrow(data_filtered) == 0) next
+  
+  for (covariate in covariates) {
+    formula <- as.formula(paste("Vf_m_min ~", covariate))
+    model <- lm(formula, data = data_filtered)
+    
+    # Extract summary stats
+    model_summary <- tidy(model) %>%
+      filter(term != "(Intercept)") %>% # Exclude intercept
+      mutate(
+        site = site,
+        method = method,
+        df = glance(model)$df.residual # Degrees of freedom
+      )
+    
+    # Append results
+    results <- bind_rows(results, model_summary)
+  }
+}
+
+# Ensure dplyr functions are explicitly called to avoid conflicts
+final_table <- results %>%
+  mutate(estimate= round(estimate,2),
+         std.error =round(std.error,2),
+         p.value = round(p.value, 3)
+  ) %>%
+  dplyr::select(site, method, term, estimate, std.error, df, p.value) %>%
+  dplyr::rename(
+    Covariate = term,
+    Estimate = estimate,
+    `Std. Error` = std.error,
+    `Degrees of Freedom` = df,
+    `p-value` = p.value
+  )
+
+# View or export table
+print(final_table)
+# write.csv(final_table, "/Users/kellyloria/Documents/UNR/Ncycle/Ncycle_linear_model_drivers/GBU_NO3_vf_model.csv", row.names = FALSE)
 

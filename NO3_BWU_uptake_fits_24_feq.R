@@ -61,7 +61,7 @@ Uadd_plot_1<- ggplot(BWU_no3_datq_230718, aes(x = TMR_NO3*1000, y = Uadd_int1*10
 BWU_no3_datq_230810 <- BWU_no3_datq%>%
   filter(date==as.Date("2023-08-10"))
 
-BWU_no3_datq_230810<-BWU_no3_datq_230810[c(-10,-11,-12,-13,-14),]
+BWU_no3_datq_230810<-BWU_no3_datq_230810[c(-9,-10,-11,-12,-13,-14),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = BWU_no3_datq_230810, fct = MM.2())
 summary(model.drm1)
@@ -108,7 +108,7 @@ v_sd <- sd(na.omit(BWU_no3_datq_230810$Vf_add_int))
 BWU_no3_datq_230925 <- BWU_no3_datq%>%
   filter(date==as.Date("2023-09-25"))
 
-BWU_no3_datq_230925<-BWU_no3_datq_230925[c(-11,-12,-13,-14,-15),]
+BWU_no3_datq_230925<-BWU_no3_datq_230925[c(-10,-11,-12,-13,-14,-15),]
 
 model.drm1 <- drm (Uadd_int1 ~ TMR_NO3, data = BWU_no3_datq_230925, fct = MM.2())
 summary(model.drm1)
@@ -164,7 +164,7 @@ GBL_nh4_grid <- ggarrange(Uadd_plot_1,
                       legend = "bottom")
 
 
-ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages\ /supp\ figures/BWU_no3_mmfits_grid.png", plot = GBL_nh4_grid, width = 8.5, height = 2.5, units = "in")
+ggsave("/Users/kellyloria/Documents/Publications/CH1\ biogeochem\ linkages/supp\ figures/BWU_no3_mmfits_grid_25.png", plot = GBL_nh4_grid, width = 8.5, height = 2.5, units = "in")
 
 
 
